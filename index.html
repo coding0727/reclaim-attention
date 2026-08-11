@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reclaim Attention — Less Scrolling. More Living.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F7F5;
+    --bg-alt: #ECF1EE;
+    --card: #FFFFFF;
+    --ink: #263238;
+    --ink-soft: #5C6B66;
+    --teal: #4F7C77;
+    --teal-deep: #3A5C58;
+    --teal-pale: #DCE9E6;
+    --sand: #C9B79C;
+    --sand-deep: #A88F6C;
+    --line: #DCE3DE;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--teal); color:#fff;}
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--teal-deep);
+    outline-offset:3px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:26px 6vw;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+    gap:16px;
+    position:sticky;
+    top:0;
+    background:rgba(245,247,245,0.92);
+    backdrop-filter:blur(6px);
+    z-index:10;
+  }
+  .wordmark{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:1.35rem;
+    text-decoration:none;
+    letter-spacing:-0.01em;
+  }
+  nav{display:flex; gap:2px; align-items:center;}
+  .nav-link{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--ink-soft);
+    padding:10px 15px;
+    border-bottom:2px solid transparent;
+    background:none;
+    border-top:none; border-left:none; border-right:none;
+    cursor:pointer;
+    transition:color 0.15s ease, border-color 0.15s ease;
+  }
+  .nav-link:hover{color:var(--ink);}
+  .nav-link.active{color:var(--teal-deep); border-bottom-color:var(--teal);}
+
+  main{max-width:1080px; margin:0 auto; padding:0 6vw;}
+  .page{display:none; animation:fadein 0.4s ease;}
+  .page.active{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  section.band{padding:8vh 0;}
+  section.band.alt{
+    background:var(--bg-alt);
+    margin:0 calc(-6vw);
+    padding:8vh 6vw;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal-deep);
+    display:block;
+    margin-bottom:16px;
+  }
+  h1,h2,h3{font-family:'Newsreader', serif; font-weight:500; margin:0;}
+
+  /* ---------- Hero + breathing signature ---------- */
+  .hero{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:56px;
+    align-items:center;
+    padding:8vh 0 6vh;
+  }
+  .hero h1{
+    font-style:italic;
+    font-size:clamp(2.3rem, 4.6vw, 3.6rem);
+    line-height:1.12;
+    margin-bottom:22px;
+  }
+  .hero p.lede{
+    font-size:1.05rem;
+    line-height:1.7;
+    color:var(--ink-soft);
+    max-width:48ch;
+    margin:0 0 28px;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.75rem;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    padding:13px 24px;
+    border-radius:3px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+    border:1px solid transparent;
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-primary{background:var(--teal-deep); color:#fff;}
+  .btn-primary:hover{background:var(--ink);}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn:disabled:hover{background:var(--teal-deep);}
+  .btn-ghost{background:transparent; color:var(--ink); border-color:var(--line);}
+  .btn-ghost:hover{border-color:var(--teal-deep); color:var(--teal-deep);}
+
+  .breathe-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    height:340px;
+  }
+  .breathe-ring{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid var(--teal);
+    opacity:0.35;
+  }
+  .breathe-ring.r1{width:120px; height:120px; animation:breathe 8s ease-in-out infinite;}
+  .breathe-ring.r2{width:200px; height:200px; animation:breathe 8s ease-in-out infinite; animation-delay:0.4s;}
+  .breathe-ring.r3{width:280px; height:280px; animation:breathe 8s ease-in-out infinite; animation-delay:0.8s;}
+  .breathe-core{
+    position:relative;
+    width:64px; height:64px;
+    border-radius:50%;
+    background:var(--teal);
+    display:flex; align-items:center; justify-content:center;
+    animation:corepulse 8s ease-in-out infinite;
+  }
+  .breathe-label{
+    position:absolute;
+    bottom:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+  }
+  @keyframes breathe{
+    0%, 100%{transform:scale(0.9); opacity:0.15;}
+    50%{transform:scale(1.08); opacity:0.4;}
+  }
+  @keyframes corepulse{
+    0%, 100%{transform:scale(0.92);}
+    50%{transform:scale(1.06);}
+  }
+
+  /* ---------- Placeholder image blocks ---------- */
+  .img-placeholder{
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:6px;
+    background:linear-gradient(160deg, var(--teal-pale), var(--bg-alt));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .img-placeholder.round{border-radius:50%; aspect-ratio:1/1;}
+  .img-placeholder svg{width:44%; height:44%; opacity:0.55;}
+  .img-placeholder .ph-label{
+    position:absolute;
+    bottom:10px; left:0; right:0;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+
+  /* ---------- Mission / cards ---------- */
+  .mission-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+    margin-top:20px;
+  }
+  .mission-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:28px;
+  }
+  .mission-card h3{font-size:1.15rem; font-style:italic; margin-bottom:10px;}
+  .mission-card p{color:var(--ink-soft); line-height:1.6; font-size:0.94rem; margin:0;}
+
+  .section-title{
+    font-size:clamp(1.8rem, 3.4vw, 2.4rem);
+    font-style:italic;
+    margin-bottom:22px;
+  }
+  .prose p{line-height:1.75; color:#33403C; max-width:68ch; margin:0 0 1.3em;}
+  .prose p:last-child{margin-bottom:0;}
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:52px;
+    align-items:start;
+  }
+  .pull-quote{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-size:1.3rem;
+    line-height:1.5;
+    color:var(--teal-deep);
+    border-left:2px solid var(--teal);
+    padding-left:22px;
+    margin:2em 0;
+  }
+
+  /* ---------- Resources ---------- */
+  .resource-block{
+    padding:6vh 0;
+    border-bottom:1px solid var(--line);
+  }
+  .resource-block:last-child{border-bottom:none;}
+  .resource-block h3{font-size:1.35rem; font-style:italic; margin-bottom:14px;}
+
+  .levels{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:24px;
+    margin-top:24px;
+  }
+  .level-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:26px;
+    position:relative;
+  }
+  .level-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.75rem;
+    color:var(--sand-deep);
+    letter-spacing:0.08em;
+    display:block;
+    margin-bottom:10px;
+  }
+  .level-card h4{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:1.15rem;
+    margin:0 0 12px;
+  }
+  .level-card ul{margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.7; font-size:0.92rem;}
+
+  .reduce-cols{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px;
+    margin-top:20px;
+  }
+  .reduce-card{
+    padding:22px;
+    border-radius:6px;
+    background:var(--bg-alt);
+  }
+  .reduce-card h4{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--teal-deep);
+    margin-bottom:12px;
+  }
+  .reduce-card ul{margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.7; font-size:0.92rem;}
+
+  /* ---------- Resources sub-navigation ---------- */
+  .subnav{
+    position:sticky;
+    z-index:9;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    margin:0 calc(-6vw) 0;
+    padding:0 6vw;
+    display:flex;
+    gap:6px;
+  }
+  .subnav-link{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--ink-soft);
+    padding:16px 14px;
+    border-bottom:2px solid transparent;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .subnav-link:hover{color:var(--ink);}
+  .subnav-link.active{color:var(--teal-deep); border-bottom-color:var(--sand-deep);}
+
+  .section-rail{
+    position:fixed;
+    right:26px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    z-index:8;
+  }
+  .rail-dot{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+  }
+  .rail-dot .dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--line);
+    border:1px solid var(--ink-soft);
+    flex-shrink:0;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  .rail-dot.active .dot{background:var(--teal-deep); border-color:var(--teal-deep);}
+  .rail-dot .rail-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.03em;
+    color:var(--ink-soft);
+    opacity:0;
+    transform:translateX(-4px);
+    transition:opacity 0.15s ease, transform 0.15s ease;
+    white-space:nowrap;
+  }
+  .rail-dot:hover .rail-label, .rail-dot.active .rail-label{opacity:1; transform:translateX(0);}
+  @media (max-width: 1180px){
+    .section-rail{display:none;}
+  }
+  @media (max-width: 860px){
+    .subnav{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  }
+
+  /* ---------- Community ---------- */
+  .community-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    margin-top:20px;
+  }
+  .community-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:32px;
+  }
+  .community-card h3{font-size:1.3rem; font-style:italic; margin-bottom:12px;}
+  .community-card p{color:var(--ink-soft); line-height:1.65; margin:0 0 20px;}
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--ink-soft);
+    margin-bottom:7px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:11px 13px;
+    font-family:'Work Sans', sans-serif;
+    font-size:0.92rem;
+    color:var(--ink);
+  }
+  .field textarea{resize:vertical; min-height:90px;}
+  .form-note{
+    margin-top:12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    color:var(--teal-deep);
+    display:none;
+  }
+  .form-note.show{display:block;}
+  .fs-success, .fs-error{
+    margin-top:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    display:none;
+  }
+  .fs-success:not(:empty){display:block; color:var(--teal-deep);}
+  .fs-error:not(:empty){display:block; color:#B14C4C;}
+  .field-error{
+    display:none;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.66rem;
+    color:#B14C4C;
+    margin-top:5px;
+  }
+  .field-error:not(:empty){display:block;}
+
+  /* ---------- Disclaimer page ---------- */
+  .disclaimer-box{
+    background:var(--bg-alt);
+    border-radius:6px;
+    padding:36px;
+    margin:6vh 0 8vh;
+  }
+  .disclaimer-box p{color:var(--ink-soft); line-height:1.75; max-width:70ch;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px 6vw;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  footer a{text-decoration:underline; text-underline-offset:2px;}
+  footer a:hover{color:var(--teal-deep);}
+
+  @media (max-width: 860px){
+    header{padding:20px 6vw;}
+    .hero{grid-template-columns:1fr; gap:36px;}
+    .breathe-wrap{height:260px;}
+    .mission-grid, .reduce-cols, .levels, .community-grid{grid-template-columns:1fr;}
+    .about-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="#" class="wordmark" data-nav="home">Reclaim Attention</a>
+  <nav>
+    <a href="#" class="nav-link active" data-nav="home">Home</a>
+    <a href="#" class="nav-link" data-nav="about">About</a>
+    <a href="#" class="nav-link" data-nav="resources-why" data-nav-group="resources">Resources</a>
+    <a href="#" class="nav-link" data-nav="community">Community</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <div>
+        <span class="eyebrow">Less Scrolling. More Living.</span>
+        <h1>Reclaim<br>your attention.</h1>
+        <p class="lede">Helping people build a healthier relationship with technology through practical strategies, evidence-informed resources, and shared experiences.</p>
+        <p class="lede" style="margin-top:-14px;">Technology is an incredible tool. But when endless scrolling quietly becomes our default way of filling every spare moment, it can leave us feeling distracted, mentally tired, and disconnected from the things that matter most.</p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary" data-nav="resources-why">Start your journey</a>
+          <a href="#" class="btn btn-ghost" data-nav="about">Read my story</a>
+        </div>
+      </div>
+      <div class="breathe-wrap" aria-hidden="true">
+        <div class="breathe-ring r3"></div>
+        <div class="breathe-ring r2"></div>
+        <div class="breathe-ring r1"></div>
+        <div class="breathe-core"></div>
+        <span class="breathe-label">breathe in · breathe out</span>
+      </div>
+    </div>
+
+    <section class="band alt">
+      <span class="eyebrow">Our mission</span>
+      <h2 class="section-title">Help people reclaim their attention,<br>one small habit at a time.</h2>
+      <div class="prose">
+        <p>We believe technology should support our lives — not quietly take them over. Our goal is not to convince everyone to delete social media forever. Instead, we want to help people become more intentional about how they use technology by sharing practical strategies, evidence-informed resources, and personal experiences.</p>
+      </div>
+      <div class="mission-grid">
+        <div class="mission-card">
+          <h3>Practical strategies</h3>
+          <p>Small, sustainable changes — from reducing stimulation to replacing habits — rather than dramatic all-or-nothing rules.</p>
+        </div>
+        <div class="mission-card">
+          <h3>Evidence-informed</h3>
+          <p>Grounded in publicly available research on attention, comparison, and digital well-being, explained in plain language.</p>
+        </div>
+        <div class="mission-card">
+          <h3>Shared experience</h3>
+          <p>A personal account of one digital detox journey, alongside space for the community to share what's worked for them.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <span class="eyebrow">One small step</span>
+      <h2 class="section-title">Every small choice matters.</h2>
+      <div class="prose">
+        <p>One less scroll can become one more conversation, one more walk, one more book chapter, or simply one more moment of peace. Whether you're looking to reduce your screen time, feel more present, or simply rediscover hobbies you've forgotten, you're in the right place.</p>
+      </div>
+    </section>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="page" id="page-about">
+    <section class="band" style="padding-top:7vh;">
+      <span class="eyebrow">My story</span>
+      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Why I started this</h1>
+      <div class="about-grid" style="margin-top:36px;">
+        <div>
+          <!-- PLACEHOLDER: replace with a real portrait or personal photo -->
+          <div class="img-placeholder round">
+            <svg viewBox="0 0 100 100" fill="none" stroke="#3A5C58" stroke-width="2">
+              <path d="M20 70 Q50 40 80 70" />
+              <circle cx="50" cy="35" r="14"/>
+            </svg>
+            <span class="ph-label">portrait — add photo</span>
+          </div>
+        </div>
+        <div class="prose">
+          <p>There was one evening that genuinely made me stop and think. After work, I wanted to relax by watching a TV show. It should have been simple: turn on the television, choose something interesting, and press play. Instead, almost without thinking, I opened Instagram.</p>
+          <p>That moment surprised me. Not because I preferred social media, but because opening the app felt automatic. I realized I had stopped making conscious choices about how I spent my free time.</p>
+          <p>I've used social media for nearly a decade. For many years, I was mindful of my screen time and didn't think much of it. But after starting a new job a few years ago, I began treating social media as a small reward after a long day. My work also involves frequent waiting periods — usually just three to ten minutes while tasks finish running. Those short breaks felt too brief to start anything meaningful, so I naturally reached for my phone.</p>
+          <p class="pull-quote">"What do you enjoy doing after work?" I struggled to answer.</p>
+          <p>I wasn't learning something new. I wasn't working on creative projects. I wasn't spending much time on hobbies I used to enjoy. Where had all those evenings gone? I couldn't remember much of what I had watched online, but I could clearly feel that I had gradually lost control over how I was spending my time.</p>
+          <p>That realization became the beginning of my digital detox journey. I began experimenting with small changes — not because social media is inherently bad, but because I wanted my attention to reflect my values rather than my habits.</p>
+          <p>Over time, I discovered strategies that made a meaningful difference. This website is a collection of those experiences, along with evidence-informed resources that helped me better understand what was happening.</p>
+          <p>I'm not a therapist, psychologist, or medical professional. Everything shared here is intended for educational purposes and is based on my personal experience together with publicly available research. My hope is simply that something here helps you reclaim a little more of your time, attention, and peace of mind.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- RESOURCES: WHY WE SCROLL -->
+  <section class="page" id="page-resources-why">
+    <div class="subnav" id="resources-subnav-1"></div>
+    <section class="band" style="padding-top:5vh;">
+      <span class="eyebrow">Resources · 1 of 3</span>
+      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Why We Scroll — and What It Costs</h1>
+      <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">Before changing a habit, it helps to understand it — both what makes it so easy to fall into, and what it quietly takes from us in return.</p>
+    </section>
+
+    <div class="resource-block" id="why-hard">
+      <h3>Why is social media so hard to put down?</h3>
+      <div class="prose">
+        <p>Modern social media platforms are intentionally designed to encourage engagement. Features such as infinite scrolling, personalized recommendations, notifications, and variable rewards make it easy to continue using an app longer than originally intended.</p>
+        <p>None of these features automatically make social media harmful. Many people use social media in healthy and positive ways. However, if scrolling begins replacing activities that matter to you — or if you regularly finish using social media feeling mentally drained — it may be worth taking a closer look at your habits.</p>
+      </div>
+    </div>
+
+    <div class="resource-block" id="why-attention">
+      <h3>Attention is a limited resource</h3>
+      <div class="prose">
+        <p>Our brains constantly decide what deserves attention. When we spend long periods rapidly switching between hundreds of unrelated pieces of information, our attention is repeatedly redirected. Research suggests that frequent interruptions and constant task-switching can make sustained concentration more difficult and leave people feeling mentally fatigued.</p>
+        <p>Personally, I noticed this at work. Meetings felt harder to sit through without checking email or thinking about something else. I constantly wanted more stimulation, even when the meeting was important. That was one of the biggest warning signs for me.</p>
+      </div>
+    </div>
+
+    <div class="resource-block" id="why-relax">
+      <h3>Why scrolling doesn't always feel relaxing</h3>
+      <div class="prose">
+        <p>Many of us scroll because we're tired. Ironically, after long scrolling sessions, we often don't feel truly rested — passive consumption doesn't always provide the kind of recovery our minds need.</p>
+        <p>For me, scrolling often left me feeling mentally full but emotionally unsatisfied. I had consumed hundreds of pieces of information, yet very little felt meaningful or memorable.</p>
+      </div>
+    </div>
+
+    <div class="resource-block" id="why-comparison" style="border-bottom:none;">
+      <h3>Social comparison</h3>
+      <div class="prose">
+        <p>Social media allows us to learn, connect, and stay informed. It can also encourage constant comparison with carefully curated versions of other people's lives. Research has linked heavy social media use with poorer mental well-being for some individuals, although the relationship is complex and varies from person to person.</p>
+        <p>Being intentional about what we follow — and how much time we spend scrolling — can help create a healthier experience.</p>
+      </div>
+    </div>
+
+    <div class="cta-row" style="padding:5vh 0 8vh;">
+      <a href="#" class="btn btn-primary" data-nav="resources-start">Next: Start a Detox →</a>
+    </div>
+  </section>
+
+  <!-- RESOURCES: START A DETOX -->
+  <section class="page" id="page-resources-start">
+    <div class="subnav" id="resources-subnav-2"></div>
+    <section class="band" style="padding-top:5vh;">
+      <span class="eyebrow">Resources · 2 of 3</span>
+      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Start a Detox</h1>
+      <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">A digital detox doesn't require deleting every app forever — just enough space to choose your attention instead of acting on autopilot.</p>
+    </section>
+
+    <section class="band alt" id="start-matters">
+      <span class="eyebrow">Why it matters</span>
+      <h2 class="section-title" style="font-size:1.9rem;">Why a digital detox matters</h2>
+      <div class="prose">
+        <p>For me, reducing social media helped me feel more present, rediscover hobbies, spend more uninterrupted time reading, enjoy conversations without constantly checking my phone, and feel less mentally cluttered at the end of the day.</p>
+        <p>Everyone's experience will be different. The goal isn't perfection — it's intentionality.</p>
+      </div>
+    </section>
+
+    <section class="band" id="start-reduce">
+      <span class="eyebrow">Three places to begin</span>
+      <h2 class="section-title" style="font-size:1.9rem;">Three ways to reduce the pull</h2>
+      <div class="reduce-cols">
+        <div class="reduce-card">
+          <h4>Reduce stimulation</h4>
+          <ul>
+            <li>Turn your phone to grayscale</li>
+            <li>Keep your phone on silent</li>
+            <li>Turn off non-essential notifications</li>
+            <li>Remove notification badges</li>
+          </ul>
+        </div>
+        <div class="reduce-card">
+          <h4>Reduce temptation</h4>
+          <ul>
+            <li>Set app time limits</li>
+            <li>Move apps off your home screen</li>
+            <li>Keep your phone in another room in the evening</li>
+            <li>Create phone-free moments at meals or before bed</li>
+          </ul>
+        </div>
+        <div class="reduce-card">
+          <h4>Reduce algorithm influence</h4>
+          <ul>
+            <li>Turn off personalized recommendations where possible</li>
+            <li>Pause watch history if appropriate</li>
+            <li>Subscribe intentionally instead of relying on endless recommendations</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-row" style="padding:2vh 0 8vh;">
+      <a href="#" class="btn btn-primary" data-nav="resources-replace">Next: Replace the Habit →</a>
+    </div>
+  </section>
+
+  <!-- RESOURCES: REPLACE THE HABIT -->
+  <section class="page" id="page-resources-replace">
+    <div class="subnav" id="resources-subnav-3"></div>
+    <section class="band" style="padding-top:5vh;">
+      <span class="eyebrow">Resources · 3 of 3</span>
+      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Replace the Habit</h1>
+      <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">Removing a habit is difficult if nothing replaces it. Instead of asking "what should I stop doing," try asking "what would I like to do instead."</p>
+    </section>
+
+    <section class="band" id="replace-levels">
+      <span class="eyebrow">A gentle progression</span>
+      <h2 class="section-title" style="font-size:1.9rem;">Four levels, from gentlest to hardest</h2>
+      <div class="prose">
+        <p>Small changes are often easier to sustain than dramatic ones. These are arranged from the gentlest starting point to the most challenging — there's no need to start at Level 1 if you're already further along.</p>
+      </div>
+
+      <div class="levels">
+        <div class="level-card">
+          <span class="level-num">01 · gentle transitions</span>
+          <h4>Start low-stimulation</h4>
+          <p style="color:var(--ink-soft); font-size:0.92rem; margin:0 0 12px;">If putting your phone away feels difficult, start with lower-stimulation activities on your phone.</p>
+          <ul><li>Sudoku</li><li>Puzzle games</li><li>Word games</li><li>Language learning apps</li></ul>
+        </div>
+        <div class="level-card">
+          <span class="level-num">02 · hands-on hobbies</span>
+          <h4>Engage your hands</h4>
+          <p style="color:var(--ink-soft); font-size:0.92rem; margin:0 0 12px;">When you're ready to spend less time on your phone, these provide gentle engagement without endless novelty.</p>
+          <ul><li>Coloring</li><li>LEGO</li><li>Sticker art</li><li>Journaling</li><li>Crafts</li></ul>
+        </div>
+        <div class="level-card">
+          <span class="level-num">03 · movement</span>
+          <h4>Reset your body</h4>
+          <p style="color:var(--ink-soft); font-size:0.92rem; margin:0 0 12px;">Sometimes the best reset is simply moving. Even one or two minutes can interrupt automatic scrolling.</p>
+          <ul><li>Stretch</li><li>Walk around the room</li><li>Drink water</li><li>Step outside</li><li>Take a short walk</li></ul>
+        </div>
+        <div class="level-card">
+          <span class="level-num">04 · stillness</span>
+          <h4>Sit with quiet</h4>
+          <p style="color:var(--ink-soft); font-size:0.92rem; margin:0 0 12px;">The most challenging step for many. Can you be comfortable without constant stimulation?</p>
+          <ul><li>Close your eyes for one minute</li><li>Practice slow breathing</li><li>Meditate</li><li>Simply sit quietly</li></ul>
+        </div>
+      </div>
+      <p style="color:var(--ink-soft); font-size:0.92rem; margin-top:22px; max-width:60ch; line-height:1.7;">Learning to be alone with our thoughts is a skill — and like any skill, it improves with practice.</p>
+    </section>
+
+    <div class="cta-row" style="padding:2vh 0 8vh;">
+      <a href="#" class="btn btn-ghost" data-nav="community">Share your own experience →</a>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="page" id="page-community">
+    <section class="band" style="padding-top:7vh;">
+      <span class="eyebrow">Community</span>
+      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Your story might help someone else</h1>
+      <div class="prose">
+        <p>Everyone's relationship with technology is different. What helped you spend less time scrolling? What hobbies have you rediscovered? What has been the hardest part of changing your habits?</p>
+      </div>
+
+      <div class="community-grid" style="grid-template-columns:1fr; max-width:640px;">
+        <div class="community-card">
+          <h3>Share your story or a tip</h3>
+          <p>Maybe it's the moment you noticed your own habits shifting, a strategy or app setting that made a real difference, or something you're still working on. Stories and tips are both welcome here — together or separately, whatever feels right to share.</p>
+          <form id="community-form">
+            <div class="field">
+              <label for="cm-name">Name</label>
+              <input type="text" id="cm-name" name="name" data-fs-field required>
+              <span data-fs-error="name" class="field-error"></span>
+            </div>
+            <div class="field">
+              <label for="cm-email">Email</label>
+              <input type="email" id="cm-email" name="email" data-fs-field required>
+              <span data-fs-error="email" class="field-error"></span>
+            </div>
+            <div class="field">
+              <label for="cm-text">Your story, tip, or both</label>
+              <textarea id="cm-text" name="message" data-fs-field required></textarea>
+              <span data-fs-error="message" class="field-error"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" id="community-submit" style="border:none;" data-fs-submit-btn disabled>Submit</button>
+            <div data-fs-success class="fs-success" id="community-success"></div>
+            <div data-fs-error class="fs-error"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <section class="page" id="page-disclaimer">
+    <section class="band" style="padding-top:7vh;">
+      <span class="eyebrow">Disclaimer</span>
+      <h1 class="section-title" style="font-size:2rem;">Please read</h1>
+      <div class="disclaimer-box">
+        <p>This website is created for educational and informational purposes only. The content reflects personal experiences together with publicly available research about technology use and digital well-being. It is not medical, psychological, or therapeutic advice and should not replace guidance from qualified healthcare professionals.</p>
+        <p>If social media use is significantly affecting your mental health, daily functioning, or relationships, consider speaking with a licensed mental health professional.</p>
+      </div>
+    </section>
+  </section>
+
+</main>
+
+<footer>
+  <span>© 2026 Reclaim Attention</span>
+  <span><a href="#" data-nav="disclaimer">Disclaimer</a></span>
+</footer>
+
+<script>
+  const RESOURCE_TABS = [
+    {id:'resources-why', label:'Why We Scroll'},
+    {id:'resources-start', label:'Start a Detox'},
+    {id:'resources-replace', label:'Replace the Habit'}
+  ];
+  const RESOURCE_SECTIONS = {
+    'resources-why': [
+      {id:'why-hard', label:'Hard to put down'},
+      {id:'why-attention', label:'Attention is limited'},
+      {id:'why-relax', label:"Doesn't feel relaxing"},
+      {id:'why-comparison', label:'Social comparison'}
+    ],
+    'resources-start': [
+      {id:'start-matters', label:'Why it matters'},
+      {id:'start-reduce', label:'Ways to reduce pull'}
+    ],
+    'resources-replace': [
+      {id:'replace-levels', label:'The four levels'}
+    ]
+  };
+
+  let railObserver = null;
+
+  function buildSubnav(activeId){
+    const html = RESOURCE_TABS.map(t =>
+      `<a href="#" class="subnav-link${t.id===activeId ? ' active' : ''}" data-nav="${t.id}">${t.label}</a>`
+    ).join('');
+    ['resources-subnav-1','resources-subnav-2','resources-subnav-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.innerHTML = html;
+    });
+  }
+
+  function positionSubnavs(){
+    const headerH = document.querySelector('header').offsetHeight;
+    document.querySelectorAll('.subnav').forEach(el => { el.style.top = headerH + 'px'; });
+  }
+
+  function buildRail(pageId){
+    document.querySelectorAll('.section-rail').forEach(r => r.remove());
+    if(railObserver){ railObserver.disconnect(); railObserver = null; }
+    const sections = RESOURCE_SECTIONS[pageId];
+    if(!sections || sections.length < 2) return;
+
+    const rail = document.createElement('div');
+    rail.className = 'section-rail';
+    rail.innerHTML = sections.map(s =>
+      `<button class="rail-dot" data-target="${s.id}"><span class="dot"></span><span class="rail-label">${s.label}</span></button>`
+    ).join('');
+    document.body.appendChild(rail);
+
+    rail.querySelectorAll('.rail-dot').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const target = document.getElementById(this.getAttribute('data-target'));
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    railObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          rail.querySelectorAll('.rail-dot').forEach(d => d.classList.remove('active'));
+          const dot = rail.querySelector('.rail-dot[data-target="' + entry.target.id + '"]');
+          if(dot) dot.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-40% 0px -50% 0px', threshold:0});
+
+    sections.forEach(s => {
+      const el = document.getElementById(s.id);
+      if(el) railObserver.observe(el);
+    });
+  }
+
+  function showPage(name){
+    const isResourcePage = RESOURCE_SECTIONS.hasOwnProperty(name);
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    if(isResourcePage){
+      document.querySelectorAll('.nav-link[data-nav-group="resources"]').forEach(l => l.classList.add('active'));
+      buildSubnav(name);
+      requestAnimationFrame(positionSubnavs);
+      buildRail(name);
+    } else {
+      document.querySelectorAll('.nav-link[data-nav="' + name + '"]').forEach(l => l.classList.add('active'));
+      buildRail(null);
+    }
+    window.scrollTo({top:0});
+  }
+
+  document.addEventListener('click', function(e){
+    const navEl = e.target.closest('[data-nav]');
+    if(navEl){
+      e.preventDefault();
+      showPage(navEl.getAttribute('data-nav'));
+    }
+  });
+
+  window.addEventListener('resize', positionSubnavs);
+
+  // Enable "Submit" only once every field has content
+  const cmForm = document.getElementById('community-form');
+  const cmSubmit = document.getElementById('community-submit');
+  const cmFields = ['cm-name', 'cm-email', 'cm-text'].map(id => document.getElementById(id));
+
+  function updateSubmitState(){
+    const allFilled = cmFields.every(f => f.value.trim().length > 0);
+    cmSubmit.disabled = !allFilled;
+  }
+  cmFields.forEach(f => f.addEventListener('input', updateSubmitState));
+  updateSubmitState();
+
+  // Clear the form once Formspree confirms a successful submission
+  const cmSuccessBox = document.getElementById('community-success');
+  new MutationObserver(function(){
+    if(cmSuccessBox.textContent.trim().length > 0){
+      cmForm.reset();
+      updateSubmitState();
+    }
+  }).observe(cmSuccessBox, {childList:true, characterData:true, subtree:true});
+</script>
+
+<script>
+  // Formspree AJAX integration for the Community form
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#community-form', formId: 'xoeaaaev' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+</body>
+</html>

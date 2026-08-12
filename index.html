@@ -243,6 +243,31 @@
     gap:52px;
     align-items:start;
   }
+  .about-portrait-frame{
+    width:220px; height:220px;
+    border-radius:50%;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 10px 26px -16px rgba(38,50,42,0.3);
+  }
+  .about-portrait-frame img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  /* ---------- Illustration banners (Action Plan, Get Involved) ---------- */
+  .illustration-banner{
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    margin:4vh 0;
+    background:var(--card);
+  }
+  .illustration-banner img{
+    width:100%;
+    display:block;
+  }
   .pull-quote{
     font-family:'Newsreader', serif;
     font-style:italic;
@@ -446,6 +471,77 @@
   }
   .field-error:not(:empty){display:block;}
 
+  /* ---------- Resources landing: picker cards ---------- */
+  .picker-intro{padding:7vh 0 2vh;}
+  .picker-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+    padding:3vh 0 9vh;
+  }
+  .pick-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    text-decoration:none;
+    color:var(--ink);
+    padding:36px 26px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--card);
+    transition:border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .pick-card:hover{
+    border-color:var(--teal);
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px -14px rgba(38,50,42,0.25);
+  }
+  .pick-circle{
+    width:132px; height:132px;
+    border-radius:50%;
+    background:linear-gradient(160deg, var(--teal-pale), var(--bg-alt));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:22px;
+    flex-shrink:0;
+  }
+  .pick-circle svg{width:52%; height:52%;}
+  .pick-card h3{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:1.25rem;
+    margin:0 0 12px;
+  }
+  .pick-card p{
+    color:var(--ink-soft);
+    font-size:0.9rem;
+    line-height:1.6;
+    margin:0 0 18px;
+    max-width:28ch;
+  }
+  .pick-explore{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--teal-deep);
+  }
+  .crumb-back{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    text-decoration:none;
+    display:inline-block;
+    margin-bottom:18px;
+  }
+  .crumb-back:hover{color:var(--teal-deep);}
+  @media (max-width: 860px){
+    .picker-grid{grid-template-columns:1fr;}
+  }
+
   /* ---------- Disclaimer page ---------- */
   .disclaimer-box{
     background:var(--bg-alt);
@@ -485,7 +581,7 @@
   <nav>
     <a href="#" class="nav-link active" data-nav="home">Home</a>
     <a href="#" class="nav-link" data-nav="about">About</a>
-    <a href="#" class="nav-link" data-nav="resources-why" data-nav-group="resources">Resources</a>
+    <a href="#" class="nav-link" data-nav="resources" data-nav-group="resources">Resources</a>
     <a href="#" class="nav-link" data-nav="community">Community</a>
   </nav>
 </header>
@@ -501,7 +597,7 @@
         <p class="lede">Helping people build a healthier relationship with technology through practical strategies, evidence-informed resources, and shared experiences.</p>
         <p class="lede" style="margin-top:-14px;">Technology is an incredible tool. But when endless scrolling quietly becomes our default way of filling every spare moment, it can leave us feeling distracted, mentally tired, and disconnected from the things that matter most.</p>
         <div class="cta-row">
-          <a href="#" class="btn btn-primary" data-nav="resources-why">Start your journey</a>
+          <a href="#" class="btn btn-primary" data-nav="resources">Start your journey</a>
           <a href="#" class="btn btn-ghost" data-nav="about">Read my story</a>
         </div>
       </div>
@@ -552,13 +648,8 @@
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Why I started this</h1>
       <div class="about-grid" style="margin-top:36px;">
         <div>
-          <!-- PLACEHOLDER: replace with a real portrait or personal photo -->
-          <div class="img-placeholder round">
-            <svg viewBox="0 0 100 100" fill="none" stroke="#3A5C58" stroke-width="2">
-              <path d="M20 70 Q50 40 80 70" />
-              <circle cx="50" cy="35" r="14"/>
-            </svg>
-            <span class="ph-label">portrait — add photo</span>
+          <div class="about-portrait-frame">
+            <img src="images/story-portrait.png" alt="Illustrated self-portrait, standing before rolling green hills">
           </div>
         </div>
         <div class="prose">
@@ -575,10 +666,59 @@
     </section>
   </section>
 
+  <!-- RESOURCES: LANDING -->
+  <section class="page" id="page-resources">
+    <section class="band picker-intro">
+      <span class="eyebrow">Resources</span>
+      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Where would you like to start?</h1>
+      <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">Pick whichever feels most relevant right now. There's no required order — some people start with the "why," others just want somewhere to begin today.</p>
+    </section>
+
+    <div class="picker-grid">
+      <a href="#" class="pick-card" data-nav="resources-why">
+        <div class="pick-circle" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" stroke="#3A5C58" stroke-width="2.2" stroke-linecap="round">
+            <path d="M50 50 m0 -22 a22 22 0 1 1 -15.6 6.4" />
+            <path d="M50 20 l7 -3 M50 20 l2 8" />
+          </svg>
+        </div>
+        <h3>Why We Scroll</h3>
+        <p>What makes it so easy to fall into — and what it quietly costs us.</p>
+        <span class="pick-explore">Explore →</span>
+      </a>
+
+      <a href="#" class="pick-card" data-nav="resources-start">
+        <div class="pick-circle" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" stroke="#3A5C58" stroke-width="2.2" stroke-linecap="round">
+            <path d="M50 75 C 35 75 28 62 32 48 C 35 37 45 30 50 20 C 55 30 65 37 68 48 C 72 62 65 75 50 75 Z" />
+            <path d="M50 75 L50 58" />
+          </svg>
+        </div>
+        <h3>Start a Detox</h3>
+        <p>Why it helps, and three concrete places to begin today.</p>
+        <span class="pick-explore">Explore →</span>
+      </a>
+
+      <a href="#" class="pick-card" data-nav="resources-replace">
+        <div class="pick-circle" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" stroke="#3A5C58" stroke-width="2.2" stroke-linecap="round">
+            <circle cx="38" cy="50" r="17" />
+            <circle cx="64" cy="50" r="17" />
+            <path d="M56 42 l8 8 -8 8 M44 42 l-8 8 8 8" />
+          </svg>
+        </div>
+        <h3>Replace the Habit</h3>
+        <p>A gentle, four-level progression for filling the space it leaves.</p>
+        <span class="pick-explore">Explore →</span>
+      </a>
+    </div>
+  </section>
+
   <!-- RESOURCES: WHY WE SCROLL -->
   <section class="page" id="page-resources-why">
     <div class="subnav" id="resources-subnav-1"></div>
     <section class="band" style="padding-top:5vh;">
+      <a href="#" class="crumb-back" data-nav="resources">← All Resources</a><br>
       <span class="eyebrow">Resources · 1 of 3</span>
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Why We Scroll — and What It Costs</h1>
       <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">Before changing a habit, it helps to understand it — both what makes it so easy to fall into, and what it quietly takes from us in return.</p>
@@ -625,6 +765,7 @@
   <section class="page" id="page-resources-start">
     <div class="subnav" id="resources-subnav-2"></div>
     <section class="band" style="padding-top:5vh;">
+      <a href="#" class="crumb-back" data-nav="resources">← All Resources</a><br>
       <span class="eyebrow">Resources · 2 of 3</span>
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Start a Detox</h1>
       <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">A digital detox doesn't require deleting every app forever — just enough space to choose your attention instead of acting on autopilot.</p>
@@ -681,6 +822,7 @@
   <section class="page" id="page-resources-replace">
     <div class="subnav" id="resources-subnav-3"></div>
     <section class="band" style="padding-top:5vh;">
+      <a href="#" class="crumb-back" data-nav="resources">← All Resources</a><br>
       <span class="eyebrow">Resources · 3 of 3</span>
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Replace the Habit</h1>
       <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">Removing a habit is difficult if nothing replaces it. Instead of asking "what should I stop doing," try asking "what would I like to do instead."</p>
@@ -691,6 +833,10 @@
       <h2 class="section-title" style="font-size:1.9rem;">Four levels, from gentlest to hardest</h2>
       <div class="prose">
         <p>Small changes are often easier to sustain than dramatic ones. These are arranged from the gentlest starting point to the most challenging — there's no need to start at Level 1 if you're already further along.</p>
+      </div>
+
+      <div class="illustration-banner">
+        <img src="images/action-plan.png" alt="The Action Plan: four illustrated stages, from phone in hand, to building something small, to stretching, to sitting in quiet meditation">
       </div>
 
       <div class="levels">
@@ -734,6 +880,10 @@
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Your story might help someone else</h1>
       <div class="prose">
         <p>Everyone's relationship with technology is different. What helped you spend less time scrolling? What hobbies have you rediscovered? What has been the hardest part of changing your habits?</p>
+      </div>
+
+      <div class="illustration-banner" style="max-width:640px;">
+        <img src="images/get-involved.png" alt="Get Involved: illustrated hands reaching toward a tree made of gears, with speech bubbles reading 'share your tips' and 'community'">
       </div>
 
       <div class="community-grid" style="grid-template-columns:1fr; max-width:640px;">
@@ -860,18 +1010,23 @@
   }
 
   function showPage(name){
-    const isResourcePage = RESOURCE_SECTIONS.hasOwnProperty(name);
+    const isResourceSub = RESOURCE_SECTIONS.hasOwnProperty(name);
+    const isResourceArea = isResourceSub || name === 'resources';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
 
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    if(isResourcePage){
+    if(isResourceArea){
       document.querySelectorAll('.nav-link[data-nav-group="resources"]').forEach(l => l.classList.add('active'));
+    } else {
+      document.querySelectorAll('.nav-link[data-nav="' + name + '"]').forEach(l => l.classList.add('active'));
+    }
+
+    if(isResourceSub){
       buildSubnav(name);
       requestAnimationFrame(positionSubnavs);
       buildRail(name);
     } else {
-      document.querySelectorAll('.nav-link[data-nav="' + name + '"]').forEach(l => l.classList.add('active'));
       buildRail(null);
     }
     window.scrollTo({top:0});

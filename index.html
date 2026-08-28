@@ -123,6 +123,29 @@
     max-width:48ch;
     margin:0 0 28px;
   }
+  .hero-photo{
+    position:relative;
+    aspect-ratio:1 / 1;
+    overflow:hidden;
+    border-radius:14px;
+    border:1px solid var(--line);
+    box-shadow:0 24px 48px -30px rgba(38,50,42,0.5);
+    background:var(--teal-pale);
+  }
+  .hero-photo img,
+  .section-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .hero-photo::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to top, rgba(38,50,42,0.16), transparent 42%);
+    pointer-events:none;
+  }
   .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
   .btn{
     font-family:'JetBrains Mono', monospace;
@@ -236,6 +259,27 @@
   .prose p{line-height:1.75; color:#33403C; max-width:68ch; margin:0 0 1.3em;}
   .prose p:last-child{margin-bottom:0;}
 
+  .section-split{
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) minmax(280px, 0.82fr);
+    gap:56px;
+    align-items:center;
+  }
+  .section-split.media-first{
+    grid-template-columns:minmax(280px, 0.82fr) minmax(0, 1fr);
+  }
+  .section-photo{
+    aspect-ratio:4 / 3;
+    overflow:hidden;
+    border-radius:10px;
+    border:1px solid var(--line);
+    box-shadow:0 18px 40px -28px rgba(38,50,42,0.45);
+    background:var(--teal-pale);
+  }
+  .section-photo.tall{aspect-ratio:4 / 5;}
+  .section-photo img{transition:transform 0.5s ease;}
+  .section-photo:hover img{transform:scale(1.015);}
+
   /* ---------- About ---------- */
   .about-grid{
     display:grid;
@@ -266,6 +310,21 @@
   }
   .illustration-banner img{
     width:100%;
+    display:block;
+  }
+  .guide-hero{
+    aspect-ratio:3 / 2;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    margin-top:4vh;
+    background:var(--bg-alt);
+    box-shadow:0 18px 40px -28px rgba(38,50,42,0.45);
+  }
+  .guide-hero img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
     display:block;
   }
   .pull-quote{
@@ -629,7 +688,9 @@
   @media (max-width: 860px){
     header{padding:20px 6vw;}
     .hero{grid-template-columns:1fr; gap:36px;}
-    .breathe-wrap{height:260px;}
+    .hero-photo{aspect-ratio:4 / 3;}
+    .section-split, .section-split.media-first{grid-template-columns:1fr; gap:32px;}
+    .section-split.media-first .section-photo{order:2;}
     .mission-grid, .reduce-cols, .levels, .recommend-grid, .community-grid{grid-template-columns:1fr;}
     .about-grid{grid-template-columns:1fr;}
   }
@@ -655,27 +716,29 @@
       <div>
         <span class="eyebrow">Less Scrolling. More Living.</span>
         <h1>Reclaim<br>your attention.</h1>
-        <p class="lede">Helping people build a healthier relationship with technology through practical strategies, evidence-informed resources, and shared experiences.</p>
-        <p class="lede" style="margin-top:-14px;">Technology is an incredible tool. But when endless scrolling quietly becomes our default way of filling every spare moment, it can leave us feeling distracted, mentally tired, and disconnected from the things that matter most.</p>
+        <p class="lede">Practical, evidence-informed guidance for spending less time scrolling and more time on the people, hobbies, and moments that matter.</p>
         <div class="cta-row">
           <a href="#" class="btn btn-primary" data-nav="resources">Start your journey</a>
           <a href="#" class="btn btn-ghost" data-nav="about">Read my story</a>
         </div>
       </div>
-      <div class="breathe-wrap" aria-hidden="true">
-        <div class="breathe-ring r3"></div>
-        <div class="breathe-ring r2"></div>
-        <div class="breathe-ring r1"></div>
-        <div class="breathe-core"></div>
-        <span class="breathe-label">breathe in · breathe out</span>
+      <div class="hero-photo">
+        <img src="images/hero-friends.jpg" alt="Four friends laughing together outdoors at sunset" fetchpriority="high">
       </div>
     </div>
 
     <section class="band alt">
-      <span class="eyebrow">Our mission</span>
-      <h2 class="section-title">Help people reclaim their attention,<br>one small habit at a time.</h2>
-      <div class="prose">
-        <p>We believe technology should support our lives — not quietly take them over. Our goal is not to convince everyone to delete social media forever. Instead, we want to help people become more intentional about how they use technology by sharing practical strategies, evidence-informed resources, and personal experiences.</p>
+      <div class="section-split">
+        <div>
+          <span class="eyebrow">Our mission</span>
+          <h2 class="section-title">Reclaim your attention,<br>one small habit at a time.</h2>
+          <div class="prose">
+            <p>Technology should support our lives, not quietly take them over. The goal isn't to delete every app — it's to make more intentional choices about where your time and attention go.</p>
+          </div>
+        </div>
+        <div class="section-photo">
+          <img src="images/home-picnic.jpg" alt="A family laughing together during a picnic in the park" loading="lazy">
+        </div>
       </div>
       <div class="mission-grid">
         <div class="mission-card">
@@ -694,10 +757,20 @@
     </section>
 
     <section class="band">
-      <span class="eyebrow">One small step</span>
-      <h2 class="section-title">Every small choice matters.</h2>
-      <div class="prose">
-        <p>One less scroll can become one more conversation, one more walk, one more book chapter, or simply one more moment of peace. Whether you're looking to reduce your screen time, feel more present, or simply rediscover hobbies you've forgotten, you're in the right place.</p>
+      <div class="section-split media-first">
+        <div class="section-photo">
+          <img src="images/home-conversation.jpg" alt="Two friends talking at a café with a phone set aside on the table" loading="lazy">
+        </div>
+        <div>
+          <span class="eyebrow">One small step</span>
+          <h2 class="section-title">Every small choice matters.</h2>
+          <div class="prose">
+            <p>One less scroll can become one more conversation, one more walk, one more book chapter, or simply one more moment of peace.</p>
+          </div>
+          <div class="cta-row" style="margin-top:24px;">
+            <a href="#" class="btn btn-ghost" data-nav="resources">Explore the guides →</a>
+          </div>
+        </div>
       </div>
     </section>
   </section>
@@ -796,6 +869,9 @@
       <span class="eyebrow">Resources · 1 of 4</span>
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Why We Scroll — and What It Costs</h1>
       <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">Before changing a habit, it helps to understand it — both what makes it so easy to fall into, and what it quietly takes from us in return.</p>
+      <div class="guide-hero">
+        <img src="images/why-we-scroll.jpg" alt="A woman feeling tired while scrolling on her phone at home" loading="lazy">
+      </div>
     </section>
 
     <div class="resource-block" id="why-hard">
@@ -846,11 +922,18 @@
     </section>
 
     <section class="band alt" id="start-matters">
-      <span class="eyebrow">Why it matters</span>
-      <h2 class="section-title" style="font-size:1.9rem;">Why a digital detox matters</h2>
-      <div class="prose">
-        <p>For me, reducing social media helped me feel more present, rediscover hobbies, spend more uninterrupted time reading, enjoy conversations without constantly checking my phone, and feel less mentally cluttered at the end of the day.</p>
-        <p>Everyone's experience will be different. The goal isn't perfection — it's intentionality.</p>
+      <div class="section-split">
+        <div>
+          <span class="eyebrow">Why it matters</span>
+          <h2 class="section-title" style="font-size:1.9rem;">Why a digital detox matters</h2>
+          <div class="prose">
+            <p>For me, reducing social media helped me feel more present, rediscover hobbies, spend more uninterrupted time reading, and feel less mentally cluttered at the end of the day.</p>
+            <p>Everyone's experience will be different. The goal isn't perfection — it's intentionality.</p>
+          </div>
+        </div>
+        <div class="section-photo">
+          <img src="images/detox-reset.jpg" alt="A hiker resting beside a quiet mountain lake" loading="lazy">
+        </div>
       </div>
     </section>
 
@@ -910,7 +993,7 @@
       </div>
 
       <div class="illustration-banner">
-        <img src="images/action-plan.png" alt="The Action Plan: four illustrated stages, from phone in hand, to building something small, to stretching, to sitting in quiet meditation">
+        <img src="images/four-stages.jpg" alt="Four stages of replacing scrolling: reading, making something by hand, moving outdoors, and meditating" loading="lazy">
       </div>
 
       <div class="levels">
@@ -955,6 +1038,9 @@
       <span class="eyebrow">Resources · 4 of 4</span>
       <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Recommended Resources</h1>
       <p style="color:var(--ink-soft); max-width:60ch; line-height:1.7; margin-top:16px;">A curated starting point for understanding digital wellbeing, attention, and practical ways to build a healthier relationship with technology.</p>
+      <div class="guide-hero">
+        <img src="images/recommended-reading.jpg" alt="A stack of books beside a mug in a quiet library" loading="lazy">
+      </div>
     </section>
 
     <section class="band" id="recommended-books">
@@ -1051,7 +1137,7 @@
       </div>
 
       <div class="illustration-banner" style="max-width:640px;">
-        <img src="images/get-involved.png" alt="Get Involved: illustrated hands reaching toward a tree made of gears, with speech bubbles reading 'share your tips' and 'community'">
+        <img src="images/share-stories.jpg" alt="A community gathering where one person shares her story with the group" loading="lazy">
       </div>
 
       <div class="community-grid" style="grid-template-columns:1fr; max-width:640px;">

@@ -444,28 +444,9 @@
     position:relative;
     overflow:hidden;
   }
-  .flip-card-front::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(38,50,42,0.42);
-    opacity:0;
-    transition:opacity 0.2s ease;
-    pointer-events:none;
-  }
-  .flip-card:hover .flip-card-front,
-  .flip-card:focus-visible .flip-card-front{
+  .flip-card:hover .flip-card-front{
     border-color:var(--teal);
     box-shadow:0 14px 32px -14px rgba(58,92,88,0.35);
-  }
-  .flip-card:hover .flip-card-front::before,
-  .flip-card:focus-visible .flip-card-front::before{opacity:1;}
-  .flip-front-content{
-    position:relative;
-    z-index:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
   }
   .flip-card-back{
     background:var(--bg-alt);
@@ -479,26 +460,30 @@
     color:var(--ink);
     margin:0;
     line-height:1.25;
-    transition:color 0.2s ease;
+    position:relative;
+    z-index:0;
   }
-  .flip-card:hover h4,
-  .flip-card:focus-visible h4{color:#fff;}
+  .flip-hover{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-top:2.75rem;
+    background:rgba(38,50,42,0.42);
+    opacity:0;
+    transition:opacity 0.2s ease;
+    pointer-events:none;
+    z-index:1;
+  }
+  .flip-card:hover .flip-hover,
+  .flip-card:focus-visible .flip-hover{opacity:1;}
   .flip-hint{
     font-family:'JetBrains Mono', monospace;
     font-size:0.95rem;
     letter-spacing:0.04em;
     color:#fff;
     margin:0;
-    max-height:0;
-    opacity:0;
-    overflow:hidden;
-    transition:opacity 0.2s ease, max-height 0.2s ease, margin-top 0.2s ease;
-  }
-  .flip-card:hover .flip-hint,
-  .flip-card:focus-visible .flip-hint{
-    max-height:2rem;
-    opacity:1;
-    margin-top:14px;
   }
   .flip-card ul{margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.65; font-size:0.92rem;}
 
@@ -1049,10 +1034,8 @@
         <button type="button" class="flip-card" aria-pressed="false" aria-label="Reduce stimulation — tap to learn">
           <div class="flip-card-inner">
             <div class="flip-card-front">
-              <div class="flip-front-content">
-                <h4>Reduce stimulation</h4>
-                <span class="flip-hint" aria-hidden="true">Tap to learn</span>
-              </div>
+              <h4>Reduce stimulation</h4>
+              <div class="flip-hover" aria-hidden="true"><span class="flip-hint">Tap to learn</span></div>
             </div>
             <div class="flip-card-back">
               <ul>
@@ -1067,10 +1050,8 @@
         <button type="button" class="flip-card" aria-pressed="false" aria-label="Reduce temptation — tap to learn">
           <div class="flip-card-inner">
             <div class="flip-card-front">
-              <div class="flip-front-content">
-                <h4>Reduce temptation</h4>
-                <span class="flip-hint" aria-hidden="true">Tap to learn</span>
-              </div>
+              <h4>Reduce temptation</h4>
+              <div class="flip-hover" aria-hidden="true"><span class="flip-hint">Tap to learn</span></div>
             </div>
             <div class="flip-card-back">
               <ul>
@@ -1085,10 +1066,8 @@
         <button type="button" class="flip-card" aria-pressed="false" aria-label="Reduce algorithm influence — tap to learn">
           <div class="flip-card-inner">
             <div class="flip-card-front">
-              <div class="flip-front-content">
-                <h4>Reduce algorithm influence</h4>
-                <span class="flip-hint" aria-hidden="true">Tap to learn</span>
-              </div>
+              <h4>Reduce algorithm influence</h4>
+              <div class="flip-hover" aria-hidden="true"><span class="flip-hint">Tap to learn</span></div>
             </div>
             <div class="flip-card-back">
               <ul>

@@ -37,6 +37,10 @@
   }
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important; transition-duration:0.01ms !important;}
+    .flip-card-inner{transition:none;}
+    .flip-card:not(.flipped) .flip-card-back{display:none;}
+    .flip-card.flipped .flip-card-front{display:none;}
+    .flip-card.flipped .flip-card-back{position:relative; transform:none;}
   }
 
   /* ---------- Header ---------- */
@@ -112,9 +116,19 @@
   }
   .hero h1{
     font-style:italic;
-    font-size:clamp(2.3rem, 4.6vw, 3.6rem);
-    line-height:1.12;
-    margin-bottom:22px;
+    font-size:clamp(2.6rem, 5.4vw, 4.2rem);
+    line-height:1.08;
+    margin-bottom:14px;
+    letter-spacing:-0.02em;
+  }
+  .hero-name{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(1.15rem, 2.2vw, 1.45rem);
+    color:var(--ink-soft);
+    margin:0 0 22px;
+    line-height:1.3;
   }
   .hero p.lede{
     font-size:1.05rem;
@@ -382,20 +396,111 @@
     gap:22px;
     margin-top:20px;
   }
-  .reduce-card{
-    padding:22px;
-    border-radius:6px;
+  .flip-card{
+    perspective:1000px;
+    cursor:pointer;
+    border:none;
+    background:none;
+    padding:0;
+    text-align:left;
+    font:inherit;
+    color:inherit;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .flip-card:focus-visible{outline:none;}
+  .flip-card:focus-visible .flip-card-inner{
+    outline:2px solid var(--teal-deep);
+    outline-offset:3px;
+  }
+  .flip-card-inner{
+    display:grid;
+    width:100%;
+    height:100%;
+    min-height:100%;
+    transition:transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-card-inner{transform:rotateY(180deg);}
+  .flip-card-front,
+  .flip-card-back{
+    grid-area:1 / 1;
+    padding:26px 22px;
+    border-radius:8px;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    border:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+  }
+  .flip-card-front{
+    background:var(--card);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    box-shadow:0 8px 24px -16px rgba(38,50,42,0.35);
+    transition:box-shadow 0.2s ease, border-color 0.2s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .flip-card-front::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(38,50,42,0.42);
+    opacity:0;
+    transition:opacity 0.2s ease;
+    pointer-events:none;
+  }
+  .flip-card:hover .flip-card-front,
+  .flip-card:focus-visible .flip-card-front{
+    border-color:var(--teal);
+    box-shadow:0 14px 32px -14px rgba(58,92,88,0.35);
+  }
+  .flip-card:hover .flip-card-front::before,
+  .flip-card:focus-visible .flip-card-front::before{opacity:1;}
+  .flip-front-content{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .flip-card-back{
     background:var(--bg-alt);
+    transform:rotateY(180deg);
+    justify-content:center;
   }
-  .reduce-card h4{
+  .flip-card h4{
+    font-family:'Newsreader', serif;
+    font-size:1.35rem;
+    font-weight:500;
+    color:var(--ink);
+    margin:0;
+    line-height:1.25;
+    transition:color 0.2s ease;
+  }
+  .flip-card:hover h4,
+  .flip-card:focus-visible h4{color:#fff;}
+  .flip-hint{
     font-family:'JetBrains Mono', monospace;
-    font-size:0.72rem;
-    text-transform:uppercase;
-    letter-spacing:0.07em;
-    color:var(--teal-deep);
-    margin-bottom:12px;
+    font-size:0.95rem;
+    letter-spacing:0.04em;
+    color:#fff;
+    margin:0;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition:opacity 0.2s ease, max-height 0.2s ease, margin-top 0.2s ease;
   }
-  .reduce-card ul{margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.7; font-size:0.92rem;}
+  .flip-card:hover .flip-hint,
+  .flip-card:focus-visible .flip-hint{
+    max-height:2rem;
+    opacity:1;
+    margin-top:14px;
+  }
+  .flip-card ul{margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.65; font-size:0.92rem;}
 
   .recommend-grid{
     display:grid;
@@ -714,8 +819,8 @@
   <section class="page active" id="page-home">
     <div class="hero">
       <div>
-        <span class="eyebrow">Less Scrolling. More Living.</span>
-        <h1>Reclaim<br>your attention.</h1>
+        <h1>Less scrolling.<br>More living.</h1>
+        <p class="hero-name">Reclaim your attention.</p>
         <p class="lede">Practical, evidence-informed guidance for spending less time scrolling and more time on the people, hobbies, and moments that matter.</p>
         <div class="cta-row">
           <a href="#" class="btn btn-primary" data-nav="resources">Start your journey</a>
@@ -941,32 +1046,59 @@
       <span class="eyebrow">Three places to begin</span>
       <h2 class="section-title" style="font-size:1.9rem;">Three ways to reduce the pull</h2>
       <div class="reduce-cols">
-        <div class="reduce-card">
-          <h4>Reduce stimulation</h4>
-          <ul>
-            <li>Turn your phone to grayscale</li>
-            <li>Keep your phone on silent</li>
-            <li>Turn off non-essential notifications</li>
-            <li>Remove notification badges</li>
-          </ul>
-        </div>
-        <div class="reduce-card">
-          <h4>Reduce temptation</h4>
-          <ul>
-            <li>Set app time limits</li>
-            <li>Move apps off your home screen</li>
-            <li>Keep your phone in another room in the evening</li>
-            <li>Create phone-free moments at meals or before bed</li>
-          </ul>
-        </div>
-        <div class="reduce-card">
-          <h4>Reduce algorithm influence</h4>
-          <ul>
-            <li>Turn off personalized recommendations where possible</li>
-            <li>Pause watch history if appropriate</li>
-            <li>Subscribe intentionally instead of relying on endless recommendations</li>
-          </ul>
-        </div>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="Reduce stimulation — tap to learn">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <div class="flip-front-content">
+                <h4>Reduce stimulation</h4>
+                <span class="flip-hint" aria-hidden="true">Tap to learn</span>
+              </div>
+            </div>
+            <div class="flip-card-back">
+              <ul>
+                <li>Turn your phone to grayscale</li>
+                <li>Keep your phone on silent</li>
+                <li>Turn off non-essential notifications</li>
+                <li>Remove notification badges</li>
+              </ul>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="Reduce temptation — tap to learn">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <div class="flip-front-content">
+                <h4>Reduce temptation</h4>
+                <span class="flip-hint" aria-hidden="true">Tap to learn</span>
+              </div>
+            </div>
+            <div class="flip-card-back">
+              <ul>
+                <li>Set app time limits</li>
+                <li>Move apps off your home screen</li>
+                <li>Keep your phone in another room in the evening</li>
+                <li>Create phone-free moments at meals or before bed</li>
+              </ul>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="Reduce algorithm influence — tap to learn">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <div class="flip-front-content">
+                <h4>Reduce algorithm influence</h4>
+                <span class="flip-hint" aria-hidden="true">Tap to learn</span>
+              </div>
+            </div>
+            <div class="flip-card-back">
+              <ul>
+                <li>Turn off personalized recommendations where possible</li>
+                <li>Pause watch history if appropriate</li>
+                <li>Subscribe intentionally instead of relying on endless recommendations</li>
+              </ul>
+            </div>
+          </div>
+        </button>
       </div>
     </section>
 
@@ -1313,6 +1445,14 @@
   }
   cmFields.forEach(f => f.addEventListener('input', updateSubmitState));
   updateSubmitState();
+
+  // Flip cards on the Start a Detox page
+  document.querySelectorAll('.flip-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      const flipped = card.classList.toggle('flipped');
+      card.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+    });
+  });
 
   // Clear the form once Formspree confirms a successful submission
   const cmSuccessBox = document.getElementById('community-success');

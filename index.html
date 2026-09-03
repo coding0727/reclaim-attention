@@ -649,28 +649,224 @@
   }
 
   /* ---------- Community ---------- */
-  .community-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
+  .community-hero{padding-top:7vh; padding-bottom:2vh;}
+  .community-hero .section-title{
+    font-size:clamp(2.2rem, 4.5vw, 3.2rem);
+    max-width:18ch;
+    line-height:1.1;
+  }
+  .community-hero .section-title .accent-italic{
+    color:var(--accent);
+    font-style:italic;
+    font-weight:300;
+  }
+  .community-hero .lede{
+    color:var(--ink-soft);
+    max-width:58ch;
+    line-height:1.7;
+    margin:0 0 36px;
+    font-size:1.02rem;
+  }
+  .community-cta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
     gap:28px;
-    margin-top:20px;
+    flex-wrap:wrap;
+    background:var(--ink);
+    color:#fff;
+    border-radius:24px;
+    padding:32px 36px;
+    margin:0 0 6vh;
   }
-  .community-card{
+  .community-cta h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.35rem, 2.4vw, 1.75rem);
+    margin:0 0 8px;
+    letter-spacing:-0.02em;
+  }
+  .community-cta p{
+    margin:0;
+    color:rgba(255,255,255,0.78);
+    max-width:52ch;
+    line-height:1.65;
+    font-size:0.95rem;
+  }
+  .btn-accent{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+    white-space:nowrap;
+  }
+  .btn-accent:hover{background:#c56a52; border-color:#c56a52; color:#fff;}
+
+  .stories-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+    margin-bottom:28px;
+    padding-top:4vh;
+    border-top:1px solid var(--line);
+  }
+  .stories-head h2{
+    font-size:clamp(1.6rem, 3vw, 2rem);
+    margin:0;
+    letter-spacing:-0.02em;
+  }
+
+  .story-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .story-card{
     background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:32px;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 16px 40px -24px rgba(30,62,52,0.22);
+    display:flex;
+    flex-direction:column;
   }
-  .community-card h3{font-size:1.3rem; font-weight:600; margin-bottom:12px;}
-  .community-card p{color:var(--ink-soft); line-height:1.65; margin:0 0 20px;}
+  .story-card-body{
+    padding:26px 24px 24px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+  .story-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .story-tag{
+    font-family:'Schibsted Grotesk', sans-serif;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .story-card h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.35rem;
+    margin:0 0 12px;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .story-card .story-text{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    line-height:1.65;
+    margin:0;
+    flex:1;
+  }
+  .story-card .story-text p{margin:0 0 0.85em;}
+  .story-card .story-text p:last-child{margin-bottom:0;}
+  .story-helped{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    font-size:0.88rem;
+    line-height:1.55;
+    color:var(--subheading);
+  }
+  .story-helped strong{
+    display:block;
+    font-family:'Schibsted Grotesk', sans-serif;
+    font-size:0.65rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:4px;
+  }
+  .story-date{
+    margin-top:18px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+    font-size:0.8rem;
+    color:var(--ink-soft);
+  }
+
+  .community-share{
+    display:grid;
+    grid-template-columns:1fr 1.05fr;
+    gap:48px;
+    align-items:start;
+    margin-top:8vh;
+    padding-top:6vh;
+    border-top:1px solid var(--line);
+  }
+  .community-share-copy h2{
+    font-size:clamp(1.8rem, 3.2vw, 2.4rem);
+    margin:0 0 16px;
+    letter-spacing:-0.02em;
+    max-width:14ch;
+    line-height:1.15;
+  }
+  .community-share-copy > p{
+    color:var(--ink-soft);
+    line-height:1.7;
+    margin:0 0 22px;
+    max-width:42ch;
+  }
+  .share-prompts{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .share-prompts li{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    color:var(--ink);
+    font-size:0.95rem;
+    line-height:1.5;
+  }
+  .share-prompts li::before{
+    content:"";
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--accent);
+    margin-top:0.45em;
+    flex-shrink:0;
+  }
+  .community-form-card{
+    background:var(--card);
+    border-radius:24px;
+    padding:36px 32px;
+    box-shadow:0 20px 48px -28px rgba(30,62,52,0.2);
+  }
+  .community-form-card h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.45rem;
+    margin:0 0 8px;
+  }
+  .community-form-card .form-intro{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    line-height:1.6;
+    margin:0 0 26px;
+  }
   .field{margin-bottom:18px;}
   .field label{
     display:block;
     font-family:'Schibsted Grotesk', sans-serif;
     font-size:0.68rem;
+    font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.07em;
-    color:var(--ink-soft);
+    color:var(--subheading);
     margin-bottom:7px;
   }
   .field input, .field textarea{
@@ -678,20 +874,25 @@
     background:var(--bg);
     border:1px solid var(--line);
     border-radius:12px;
-    padding:11px 13px;
+    padding:13px 14px;
     font-family:'Schibsted Grotesk', sans-serif;
     font-size:0.92rem;
     color:var(--ink);
   }
-  .field textarea{resize:vertical; min-height:90px;}
-  .form-note{
-    margin-top:12px;
-    font-family:'Schibsted Grotesk', sans-serif;
-    font-size:0.7rem;
-    color:var(--ink);
-    display:none;
+  .field input::placeholder,
+  .field textarea::placeholder{color:#9aa89f;}
+  .field textarea{resize:vertical; min-height:120px;}
+  .community-form-card .btn{
+    width:100%;
+    text-align:center;
+    margin-top:6px;
   }
-  .form-note.show{display:block;}
+  .form-review-note{
+    margin:8px 0 0;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
   .fs-success, .fs-error{
     margin-top:14px;
     font-family:'Schibsted Grotesk', sans-serif;
@@ -708,6 +909,11 @@
     margin-top:5px;
   }
   .field-error:not(:empty){display:block;}
+  @media (max-width: 860px){
+    .story-grid{grid-template-columns:1fr;}
+    .community-share{grid-template-columns:1fr; gap:36px;}
+    .community-cta{padding:28px 24px;}
+  }
 
   /* ---------- Resources landing: picker cards ---------- */
   .picker-intro{padding:7vh 0 2vh;}
@@ -812,8 +1018,10 @@
     .hero-photo{aspect-ratio:4 / 3;}
     .section-split, .section-split.media-first{grid-template-columns:1fr; gap:32px;}
     .section-split.media-first .section-photo{order:2;}
-    .mission-grid, .reduce-cols, .levels, .recommend-grid, .community-grid{grid-template-columns:1fr;}
+    .mission-grid, .reduce-cols, .levels, .recommend-grid{grid-template-columns:1fr;}
     .about-grid{grid-template-columns:1fr;}
+    .story-grid{grid-template-columns:1fr;}
+    .community-share{grid-template-columns:1fr; gap:36px;}
   }
 </style>
 </head>
@@ -1281,38 +1489,113 @@
 
   <!-- COMMUNITY -->
   <section class="page" id="page-community">
-    <section class="band" style="padding-top:7vh;">
-      <span class="eyebrow">Community</span>
-      <h1 class="section-title" style="font-size:clamp(2rem,4vw,2.8rem);">Your story might help someone else</h1>
-      <div class="prose">
-        <p>Everyone's relationship with technology is different. What helped you spend less time scrolling? What hobbies have you rediscovered? What has been the hardest part of changing your habits?</p>
+    <section class="band community-hero">
+      <span class="eyebrow">— Community stories</span>
+      <h1 class="section-title">Your story might help<br><span class="accent-italic">someone else.</span></h1>
+      <p class="lede">Everyone's relationship with technology is personal and evolving. Here, we share the quiet victories, the hard adjustments, and the beautiful offline moments rediscovered when we choose to look up.</p>
+
+      <div class="community-cta">
+        <div>
+          <h2>Your journey belongs on this page</h2>
+          <p>Sharing what worked for you — even a small tip — can help someone else take their first step toward a healthier relationship with their phone.</p>
+        </div>
+        <a href="#community-share" class="btn btn-accent">How it works</a>
       </div>
 
-      <div class="illustration-banner" style="max-width:640px;">
-        <img src="images/share-stories.jpg" alt="A community gathering where one person shares her story with the group" loading="lazy">
+      <div class="stories-head" id="shared-experiences">
+        <div>
+          <h2>Shared experiences</h2>
+        </div>
       </div>
 
-      <div class="community-grid" style="grid-template-columns:1fr; max-width:640px;">
-        <div class="community-card">
+      <div class="story-grid">
+        <article class="story-card">
+          <div class="story-card-body">
+            <div class="story-meta">
+              <span class="story-tag">Rediscovered art</span>
+            </div>
+            <h3>Jing Z.</h3>
+            <div class="story-text">
+              <p>As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. Over time, scrolling quietly took that space. I might open an app for 15 minutes and realize hours had passed.</p>
+              <p>Deleting Instagram didn't stick. What helped was following only people I actually knew — without a curated feed, I felt less pulled to keep scrolling, and found time again for what I enjoy.</p>
+            </div>
+            <div class="story-helped">
+              <strong>What helped me</strong>
+              Following fewer accounts and creating a less stimulating, less curated feed.
+            </div>
+            <div class="story-date">August 14, 2026</div>
+          </div>
+        </article>
+
+        <article class="story-card">
+          <div class="story-card-body">
+            <div class="story-meta">
+              <span class="story-tag">Calmer bedtimes</span>
+            </div>
+            <h3>Kyle</h3>
+            <div class="story-text">
+              <p>For a long time, scrolling on TikTok was the last thing I did before falling asleep. I was feeling more stressed at work and sleeping worse — and realized bedtime phone use might be part of it.</p>
+              <p>Quitting overnight wasn't realistic. Instead I made my phone less stimulating at night: black-and-white display and sound off. I still used TikTok at first, but less — a manageable first step.</p>
+            </div>
+            <div class="story-helped">
+              <strong>What helped me</strong>
+              Making my phone less stimulating at night with a black-and-white display and sound off.
+            </div>
+            <div class="story-date">September 2, 2026</div>
+          </div>
+        </article>
+
+        <article class="story-card">
+          <div class="story-card-body">
+            <div class="story-meta">
+              <span class="story-tag">Present family dinners</span>
+            </div>
+            <h3>Sam L.</h3>
+            <div class="story-text">
+              <p>I used to check my phone during family dinners even when I was sitting with loved ones for an hour. It seemed harmless — until I asked myself why I was connecting online when the people I care about were right in front of me.</p>
+              <p>I uninstalled social apps from my phone and only check them on a computer. That change helped me stop compulsive checking and be more present with the people around me.</p>
+            </div>
+            <div class="story-helped">
+              <strong>What helped me</strong>
+              Removing social media apps from my phone and limiting access to a computer.
+            </div>
+            <div class="story-date">July 28, 2026</div>
+          </div>
+        </article>
+      </div>
+
+      <div class="community-share" id="community-share">
+        <div class="community-share-copy">
+          <h2>How did you reclaim your time?</h2>
+          <p>Your experience — whether a small tip or a longer story — can help someone else see that change is possible.</p>
+          <ul class="share-prompts">
+            <li>What helped you spend less time scrolling?</li>
+            <li>What hobbies or moments have you rediscovered?</li>
+            <li>What has been the hardest part of changing your habits?</li>
+          </ul>
+        </div>
+
+        <div class="community-form-card">
           <h3>Share your story or a tip</h3>
-          <p>Maybe it's the moment you noticed your own habits shifting, a strategy or app setting that made a real difference, or something you're still working on. Stories and tips are both welcome here — together or separately, whatever feels right to share.</p>
+          <p class="form-intro">Write down your experience below. You can submit anonymously if preferred.</p>
           <form id="community-form">
             <div class="field">
-              <label for="cm-name">Name</label>
-              <input type="text" id="cm-name" name="name" data-fs-field required>
+              <label for="cm-name">Your name (or anonymous)</label>
+              <input type="text" id="cm-name" name="name" placeholder="e.g. Sarah J. or Anonymous" data-fs-field required>
               <span data-fs-error="name" class="field-error"></span>
             </div>
             <div class="field">
-              <label for="cm-email">Email</label>
-              <input type="email" id="cm-email" name="email" data-fs-field required>
-              <span data-fs-error="email" class="field-error"></span>
+              <label for="cm-gained">What you rediscovered / gained</label>
+              <input type="text" id="cm-gained" name="rediscovered" placeholder="e.g. Painting, Reading novels, Quiet mornings" data-fs-field required>
+              <span data-fs-error="rediscovered" class="field-error"></span>
             </div>
             <div class="field">
-              <label for="cm-text">Your story, tip, or both</label>
-              <textarea id="cm-text" name="message" data-fs-field required></textarea>
+              <label for="cm-text">Your story</label>
+              <textarea id="cm-text" name="message" placeholder="Share what changed for you, what you tried, and what helped — even a short tip is welcome." data-fs-field required></textarea>
               <span data-fs-error="message" class="field-error"></span>
             </div>
-            <button type="submit" class="btn btn-primary" id="community-submit" style="border:none;" data-fs-submit-btn disabled>Submit</button>
+            <p class="form-review-note">*Subject to review</p>
+            <button type="submit" class="btn btn-primary" id="community-submit" style="border:none;" data-fs-submit-btn disabled>Post to community board</button>
             <div data-fs-success class="fs-success" id="community-success"></div>
             <div data-fs-error class="fs-error"></div>
           </form>
@@ -1457,14 +1740,27 @@
   // Enable "Submit" only once every field has content
   const cmForm = document.getElementById('community-form');
   const cmSubmit = document.getElementById('community-submit');
-  const cmFields = ['cm-name', 'cm-email', 'cm-text'].map(id => document.getElementById(id));
+  const cmFields = ['cm-name', 'cm-gained', 'cm-text'].map(id => document.getElementById(id));
 
   function updateSubmitState(){
-    const allFilled = cmFields.every(f => f.value.trim().length > 0);
+    const allFilled = cmFields.every(f => f && f.value.trim().length > 0);
     cmSubmit.disabled = !allFilled;
   }
   cmFields.forEach(f => f.addEventListener('input', updateSubmitState));
   updateSubmitState();
+
+  // Smooth-scroll "How it works" to the share form (same-page anchor)
+  document.addEventListener('click', function(e){
+    const anchor = e.target.closest('a[href="#community-share"]');
+    if(!anchor) return;
+    e.preventDefault();
+    const page = document.getElementById('page-community');
+    if(page && !page.classList.contains('active')) showPage('community');
+    requestAnimationFrame(function(){
+      const target = document.getElementById('community-share');
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
 
   // Flip cards on the Start a Detox page
   document.querySelectorAll('.flip-card').forEach(function(card){

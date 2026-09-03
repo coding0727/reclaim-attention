@@ -717,18 +717,63 @@
     letter-spacing:-0.02em;
   }
 
-  .story-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
+  .story-carousel{
+    position:relative;
+    margin-top:4px;
+  }
+  .story-carousel-viewport{
+    overflow:hidden;
+    width:100%;
+    container-type:inline-size;
+    padding-bottom:4px;
+  }
+  .story-carousel-track{
+    display:flex;
     gap:24px;
+    align-items:stretch;
+    will-change:transform;
+  }
+  .story-carousel-track.is-animating{
+    transition:transform 0.45s cubic-bezier(0.4, 0.2, 0.2, 1);
   }
   .story-card{
+    flex:0 0 calc((100cqi - 72px) / 3.5);
+    min-width:0;
     background:var(--card);
     border-radius:20px;
     overflow:hidden;
     box-shadow:0 16px 40px -24px rgba(30,62,52,0.22);
     display:flex;
     flex-direction:column;
+  }
+  .story-carousel-nav{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:18px;
+  }
+  .story-carousel-btn{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1.5px solid var(--ink);
+    background:var(--card);
+    color:var(--ink);
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.15rem;
+    line-height:1;
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .story-carousel-btn:hover{
+    background:var(--ink);
+    color:#fff;
+  }
+  .story-carousel-btn:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
   }
   .story-card-body{
     padding:26px 24px 24px;
@@ -1044,7 +1089,7 @@
   }
   .field-error:not(:empty){display:block;}
   @media (max-width: 860px){
-    .story-grid{grid-template-columns:1fr;}
+    .story-card{flex-basis:calc((100cqi - 24px) / 1.35);}
     .community-share{grid-template-columns:1fr; gap:36px;}
     .community-cta{padding:28px 24px;}
   }
@@ -1154,8 +1199,6 @@
     .section-split.media-first .section-photo{order:2;}
     .mission-grid, .reduce-cols, .levels, .recommend-grid{grid-template-columns:1fr;}
     .about-grid{grid-template-columns:1fr;}
-    .story-grid{grid-template-columns:1fr;}
-    .community-share{grid-template-columns:1fr; gap:36px;}
   }
 </style>
 </head>
@@ -1642,57 +1685,14 @@
         </div>
       </div>
 
-      <div class="story-grid">
-        <article class="story-card">
-          <div class="story-card-body">
-            <div class="story-meta">
-              <span class="story-tag">Rediscovered art</span>
-            </div>
-            <h3>Jing Z.</h3>
-            <div class="story-text">
-              <p>As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. But over time, I found myself spending less and less time on the things I enjoyed… <button type="button" class="story-read-more" data-story="jing">Read more</button></p>
-            </div>
-            <div class="story-helped">
-              <strong>What helped me</strong>
-              Following fewer accounts and creating a less stimulating, less curated feed.
-            </div>
-            <div class="story-date">August 14, 2026</div>
-          </div>
-        </article>
-
-        <article class="story-card">
-          <div class="story-card-body">
-            <div class="story-meta">
-              <span class="story-tag">Calmer bedtimes</span>
-            </div>
-            <h3>Kyle</h3>
-            <div class="story-text">
-              <p>For a long time, scrolling on TikTok was the last thing I did before falling asleep. Over the years, I noticed that I was feeling increasingly stressed at work… <button type="button" class="story-read-more" data-story="kyle">Read more</button></p>
-            </div>
-            <div class="story-helped">
-              <strong>What helped me</strong>
-              Making my phone less stimulating at night by using a black-and-white display and turning off sound.
-            </div>
-            <div class="story-date">September 2, 2026</div>
-          </div>
-        </article>
-
-        <article class="story-card">
-          <div class="story-card-body">
-            <div class="story-meta">
-              <span class="story-tag">Present family dinners</span>
-            </div>
-            <h3>Sam L.</h3>
-            <div class="story-text">
-              <p>I used to get distracted by my phone during family dinners and gatherings. Even when I was sitting with my family for an hour, I couldn't resist checking my phone… <button type="button" class="story-read-more" data-story="sam">Read more</button></p>
-            </div>
-            <div class="story-helped">
-              <strong>What helped me</strong>
-              Removing social media apps from my phone and limiting access to a computer.
-            </div>
-            <div class="story-date">July 28, 2026</div>
-          </div>
-        </article>
+      <div class="story-carousel" aria-label="Community stories carousel">
+        <div class="story-carousel-viewport">
+          <div class="story-carousel-track" id="story-carousel-track"></div>
+        </div>
+        <div class="story-carousel-nav">
+          <button type="button" class="story-carousel-btn" id="story-prev" aria-label="Previous stories">‹</button>
+          <button type="button" class="story-carousel-btn" id="story-next" aria-label="Next stories">›</button>
+        </div>
       </div>
 
       <div class="community-share" id="community-share">
@@ -1873,6 +1873,9 @@
       buildRail(null);
     }
     window.scrollTo({top:0});
+    if(name === 'community'){
+      requestAnimationFrame(function(){ updateStoryCarousel(false); });
+    }
   }
 
   document.addEventListener('click', function(e){
@@ -1910,13 +1913,15 @@
     });
   });
 
-  // Community story modal
-  const STORIES = {
-    jing: {
+  // Community stories + carousel + modal
+  const STORY_LIST = [
+    {
+      id: 'jing',
       tag: 'Rediscovered art',
       name: 'Jing Z.',
       subtitle: 'Finding My Way Back to Art',
       date: 'August 14, 2026',
+      preview: 'As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. But over time, I found myself spending less and less time on the things I enjoyed…',
       helped: 'Following fewer accounts and creating a less stimulating, less curated feed.',
       paragraphs: [
         'As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. But over time, I found myself spending less and less time on the things I enjoyed. I couldn\'t understand where all my time was going until I realized how much of it was being eaten up by scrolling.',
@@ -1927,11 +1932,13 @@
         'I\'m still working on my relationship with social media, but this small change has made it easier for me to step away and make more time for the things I actually enjoy.'
       ]
     },
-    kyle: {
+    {
+      id: 'kyle',
       tag: 'Calmer bedtimes',
       name: 'Kyle',
       subtitle: 'Making Bedtime Less Stimulating',
       date: 'September 2, 2026',
+      preview: 'For a long time, scrolling on TikTok was the last thing I did before falling asleep. Over the years, I noticed that I was feeling increasingly stressed at work…',
       helped: 'Making my phone less stimulating at night by using a black-and-white display and turning off sound.',
       paragraphs: [
         'For a long time, scrolling on TikTok was the last thing I did before falling asleep.',
@@ -1942,11 +1949,13 @@
         'It wasn\'t a perfect solution, but it gave me a manageable first step.'
       ]
     },
-    sam: {
+    {
+      id: 'sam',
       tag: 'Present family dinners',
       name: 'Sam L.',
       subtitle: 'Choosing the People in Front of Me',
       date: 'July 28, 2026',
+      preview: 'I used to get distracted by my phone during family dinners and gatherings. Even when I was sitting with my family for an hour, I couldn\'t resist checking my phone…',
       helped: 'Removing social media apps from my phone and limiting access to a computer.',
       paragraphs: [
         'I used to get distracted by my phone during family dinners and gatherings. Even when I was sitting with my family for an hour, I couldn\'t resist checking my phone several times to see what was happening on my feed.',
@@ -1960,14 +1969,33 @@
         'Now, I only check X and Facebook when I\'m using a computer. They\'re no longer available to me during family dinners or other moments when I want to be present with the people around me.',
         'That simple change has helped me reduce my compulsive checking and, more importantly, be more present with the people right in front of me.'
       ]
+    },
+    {
+      id: 'jason',
+      tag: 'Slower entertainment',
+      name: 'Jason',
+      subtitle: 'Relearning How to Watch',
+      date: 'September 3, 2026',
+      preview: 'I became so used to the fast pace of short-form videos that I started finding everything else boring. I noticed it one day while watching a movie…',
+      helped: 'Replacing short-form videos with longer-form movies and dramas—and practicing watching them at their natural pace without skipping ahead.',
+      paragraphs: [
+        'I became so used to the fast pace of short-form videos that I started finding everything else boring.',
+        'I noticed it one day while watching a movie. Instead of letting the story unfold, I put it on 1.5x speed and kept skipping ahead, looking for the most exciting parts. I realized I wasn\'t really watching the movie anymore—I was constantly looking for the next moment of stimulation.',
+        'Over time, even things I used to enjoy started to feel too slow. A movie felt too long. A TV episode took too much patience. If something didn\'t immediately grab my attention, I wanted to skip past it.',
+        'I didn\'t want to keep living that way. I wanted to be able to enjoy things at a normal pace again—to watch a story unfold, sit through the quiet moments, and appreciate something without constantly needing to be entertained.',
+        'So instead of trying to replace short-form content with another quick distraction, I consciously started choosing longer-form entertainment. I watched dramas and movies and made a rule for myself: no skipping ahead and no speeding up.',
+        'At first, it was surprisingly difficult. But the more I practiced sitting with slower-paced content, the easier it became. I started noticing that not every moment needed to be exciting to be enjoyable.',
+        'I\'m still working on rebuilding my attention span, but I\'ve learned that sometimes the goal isn\'t to find more stimulating content. It\'s to relearn how to enjoy the content that\'s already enough.'
+      ]
     }
-  };
+  ];
 
+  const storyById = Object.fromEntries(STORY_LIST.map(s => [s.id, s]));
   const storyModal = document.getElementById('story-modal');
   let storyFocusReturn = null;
 
   function openStoryModal(id){
-    const story = STORIES[id];
+    const story = storyById[id];
     if(!story || !storyModal) return;
     storyFocusReturn = document.activeElement;
     document.getElementById('story-modal-tag').textContent = story.tag;
@@ -2007,6 +2035,85 @@
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape') closeStoryModal();
   });
+
+  // Infinite peek carousel (3 full cards + half of the next)
+  const storyTrack = document.getElementById('story-carousel-track');
+  const storyPrevBtn = document.getElementById('story-prev');
+  const storyNextBtn = document.getElementById('story-next');
+  const storyGap = 24;
+  let storyIndex = 0;
+  let storyAnimating = false;
+
+  function storyCardHTML(story){
+    return (
+      '<article class="story-card">' +
+        '<div class="story-card-body">' +
+          '<div class="story-meta"><span class="story-tag">' + story.tag + '</span></div>' +
+          '<h3>' + story.name + '</h3>' +
+          '<div class="story-text"><p>' + story.preview +
+            ' <button type="button" class="story-read-more" data-story="' + story.id + '">Read more</button></p></div>' +
+          '<div class="story-helped"><strong>What helped me</strong>' + story.helped + '</div>' +
+          '<div class="story-date">' + story.date + '</div>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function buildStoryCarousel(){
+    if(!storyTrack || !STORY_LIST.length) return;
+    // Duplicate set so we can loop seamlessly while peeking the next card
+    const sequence = STORY_LIST.concat(STORY_LIST);
+    storyTrack.innerHTML = sequence.map(storyCardHTML).join('');
+    storyIndex = 0;
+    updateStoryCarousel(false);
+  }
+
+  function storyStep(){
+    const card = storyTrack && storyTrack.querySelector('.story-card');
+    if(!card) return 0;
+    return card.getBoundingClientRect().width + storyGap;
+  }
+
+  function updateStoryCarousel(animate){
+    if(!storyTrack) return;
+    storyTrack.classList.toggle('is-animating', !!animate);
+    storyTrack.style.transform = 'translateX(' + (-storyIndex * storyStep()) + 'px)';
+  }
+
+  function advanceStory(dir){
+    if(!storyTrack || storyAnimating || STORY_LIST.length < 2) return;
+    storyAnimating = true;
+
+    // Jump to the duplicated set before animating backward from the start
+    if(dir < 0 && storyIndex === 0){
+      storyIndex = STORY_LIST.length;
+      updateStoryCarousel(false);
+      void storyTrack.offsetWidth;
+    }
+
+    storyIndex += dir;
+    updateStoryCarousel(true);
+
+    const onEnd = function(e){
+      if(e.propertyName !== 'transform') return;
+      storyTrack.removeEventListener('transitionend', onEnd);
+      // Snap back into the first copy without a visible jump
+      if(storyIndex >= STORY_LIST.length){
+        storyIndex -= STORY_LIST.length;
+        updateStoryCarousel(false);
+      } else if(storyIndex < 0){
+        storyIndex += STORY_LIST.length;
+        updateStoryCarousel(false);
+      }
+      storyAnimating = false;
+    };
+    storyTrack.addEventListener('transitionend', onEnd);
+  }
+
+  if(storyPrevBtn) storyPrevBtn.addEventListener('click', function(){ advanceStory(-1); });
+  if(storyNextBtn) storyNextBtn.addEventListener('click', function(){ advanceStory(1); });
+  window.addEventListener('resize', function(){ updateStoryCarousel(false); });
+  buildStoryCarousel();
 
   // Flip cards on the Start a Detox page
   document.querySelectorAll('.flip-card').forEach(function(card){

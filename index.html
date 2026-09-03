@@ -333,16 +333,19 @@
     align-items:start;
   }
   .about-portrait-frame{
-    width:220px; height:220px;
+    width:240px; height:240px;
     border-radius:50%;
     overflow:hidden;
-    border:1px solid var(--line);
-    box-shadow:0 10px 26px -16px rgba(38,50,42,0.3);
+    padding:12px;
+    background:var(--card);
+    border:none;
+    box-shadow:0 16px 40px -24px rgba(30,62,52,0.18);
   }
   .about-portrait-frame img{
     width:100%; height:100%;
     object-fit:cover;
     display:block;
+    border-radius:50%;
   }
 
   /* ---------- Illustration banners (Action Plan, Get Involved) ---------- */
@@ -668,30 +671,51 @@
     font-size:1.02rem;
   }
   .community-cta{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:28px;
-    flex-wrap:wrap;
+    display:grid;
+    grid-template-columns:1fr 1.15fr;
+    gap:32px;
+    align-items:stretch;
     background:var(--ink);
     color:#fff;
     border-radius:24px;
-    padding:32px 36px;
+    padding:28px;
     margin:0 0 6vh;
   }
-  .community-cta h2{
+  .community-cta-copy{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:12px 8px 12px 16px;
+  }
+  .community-cta-copy h2{
     font-family:'Fraunces', serif;
     font-weight:600;
     font-size:clamp(1.35rem, 2.4vw, 1.75rem);
-    margin:0 0 8px;
+    margin:0 0 12px;
     letter-spacing:-0.02em;
   }
-  .community-cta p{
-    margin:0;
+  .community-cta-copy p{
+    margin:0 0 28px;
     color:rgba(255,255,255,0.78);
-    max-width:52ch;
+    max-width:42ch;
     line-height:1.65;
     font-size:0.95rem;
+  }
+  .community-cta-copy .btn-accent{
+    align-self:flex-start;
+    margin-top:auto;
+  }
+  .community-cta-photo{
+    border-radius:16px;
+    overflow:hidden;
+    min-height:260px;
+    background:rgba(255,255,255,0.08);
+  }
+  .community-cta-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
   }
   .btn-accent{
     background:var(--accent);
@@ -1091,7 +1115,21 @@
   @media (max-width: 860px){
     .story-card{flex-basis:calc((100cqi - 24px) / 1.35);}
     .community-share{grid-template-columns:1fr; gap:36px;}
-    .community-cta{padding:28px 24px;}
+    .community-cta{
+      grid-template-columns:1fr;
+      padding:22px;
+      gap:20px;
+    }
+    .community-cta-copy{
+      padding:8px 4px 0;
+      order:1;
+    }
+    .community-cta-copy .btn-accent{margin-top:8px;}
+    .community-cta-photo{
+      order:2;
+      min-height:200px;
+      aspect-ratio:16 / 9;
+    }
   }
 
   /* ---------- Resources landing: picker cards ---------- */
@@ -1672,11 +1710,14 @@
       <p class="lede">Everyone's relationship with technology is personal and evolving. Here, we share the quiet victories, the hard adjustments, and the beautiful offline moments rediscovered when we choose to look up.</p>
 
       <div class="community-cta">
-        <div>
+        <div class="community-cta-copy">
           <h2>Your journey belongs on this page</h2>
           <p>Sharing what worked for you — even a small tip — can help someone else take their first step toward a healthier relationship with their phone.</p>
+          <a href="#community-share" class="btn btn-accent">How it works</a>
         </div>
-        <a href="#community-share" class="btn btn-accent">How it works</a>
+        <div class="community-cta-photo">
+          <img src="images/share-stories.jpg" alt="A community gathering where one person shares her story with the group" loading="lazy">
+        </div>
       </div>
 
       <div class="stories-head" id="shared-experiences">

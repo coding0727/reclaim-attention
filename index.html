@@ -766,8 +766,21 @@
     margin:0;
     flex:1;
   }
-  .story-card .story-text p{margin:0 0 0.85em;}
-  .story-card .story-text p:last-child{margin-bottom:0;}
+  .story-card .story-text p{margin:0;}
+  .story-read-more{
+    display:inline;
+    margin:0;
+    padding:0;
+    border:none;
+    background:none;
+    font:inherit;
+    font-weight:600;
+    color:var(--accent);
+    cursor:pointer;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  .story-read-more:hover{color:var(--ink);}
   .story-helped{
     margin-top:12px;
     padding-top:12px;
@@ -892,6 +905,127 @@
     font-size:0.8rem;
     color:var(--ink-soft);
     font-style:italic;
+  }
+
+  /* ---------- Story modal ---------- */
+  .story-modal{
+    position:fixed;
+    inset:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity 0.2s ease, visibility 0.2s ease;
+  }
+  .story-modal.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+  .story-modal-backdrop{
+    position:absolute;
+    inset:0;
+    background:rgba(30,62,52,0.48);
+    border:none;
+    padding:0;
+    cursor:pointer;
+  }
+  .story-modal-panel{
+    position:relative;
+    z-index:1;
+    width:min(640px, 100%);
+    max-height:min(82vh, 720px);
+    overflow:auto;
+    background:var(--card);
+    border-radius:24px;
+    padding:36px 32px 32px;
+    box-shadow:0 28px 64px -20px rgba(30,62,52,0.35);
+    transform:translateY(10px);
+    transition:transform 0.2s ease;
+  }
+  .story-modal.open .story-modal-panel{transform:translateY(0);}
+  .story-modal-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    width:36px;
+    height:36px;
+    border:none;
+    border-radius:50%;
+    background:var(--bg-alt);
+    color:var(--ink);
+    font-size:1.35rem;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .story-modal-close:hover{background:var(--line);}
+  .story-modal-tag{
+    font-family:'Schibsted Grotesk', sans-serif;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:block;
+    margin-bottom:10px;
+  }
+  .story-modal-panel h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.5rem, 3vw, 1.9rem);
+    margin:0 0 6px;
+    letter-spacing:-0.02em;
+    padding-right:36px;
+  }
+  .story-modal-title{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:1.05rem;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+  }
+  .story-modal-body{
+    color:var(--ink-soft);
+    font-size:0.98rem;
+    line-height:1.7;
+  }
+  .story-modal-body p{margin:0 0 1em;}
+  .story-modal-body p:last-child{margin-bottom:0;}
+  .story-modal-helped{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    font-size:0.95rem;
+    line-height:1.6;
+    color:var(--subheading);
+  }
+  .story-modal-helped strong{
+    display:block;
+    font-family:'Schibsted Grotesk', sans-serif;
+    font-size:0.65rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .story-modal-date{
+    margin-top:18px;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+  }
+  body.modal-open{overflow:hidden;}
+  @media (prefers-reduced-motion: reduce){
+    .story-modal,
+    .story-modal-panel{transition:none;}
   }
   .fs-success, .fs-error{
     margin-top:14px;
@@ -1516,8 +1650,7 @@
             </div>
             <h3>Jing Z.</h3>
             <div class="story-text">
-              <p>As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. Over time, scrolling quietly took that space. I might open an app for 15 minutes and realize hours had passed.</p>
-              <p>Deleting Instagram didn't stick. What helped was following only people I actually knew — without a curated feed, I felt less pulled to keep scrolling, and found time again for what I enjoy.</p>
+              <p>As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. But over time, I found myself spending less and less time on the things I enjoyed… <button type="button" class="story-read-more" data-story="jing">Read more</button></p>
             </div>
             <div class="story-helped">
               <strong>What helped me</strong>
@@ -1534,12 +1667,11 @@
             </div>
             <h3>Kyle</h3>
             <div class="story-text">
-              <p>For a long time, scrolling on TikTok was the last thing I did before falling asleep. I was feeling more stressed at work and sleeping worse — and realized bedtime phone use might be part of it.</p>
-              <p>Quitting overnight wasn't realistic. Instead I made my phone less stimulating at night: black-and-white display and sound off. I still used TikTok at first, but less — a manageable first step.</p>
+              <p>For a long time, scrolling on TikTok was the last thing I did before falling asleep. Over the years, I noticed that I was feeling increasingly stressed at work… <button type="button" class="story-read-more" data-story="kyle">Read more</button></p>
             </div>
             <div class="story-helped">
               <strong>What helped me</strong>
-              Making my phone less stimulating at night with a black-and-white display and sound off.
+              Making my phone less stimulating at night by using a black-and-white display and turning off sound.
             </div>
             <div class="story-date">September 2, 2026</div>
           </div>
@@ -1552,8 +1684,7 @@
             </div>
             <h3>Sam L.</h3>
             <div class="story-text">
-              <p>I used to check my phone during family dinners even when I was sitting with loved ones for an hour. It seemed harmless — until I asked myself why I was connecting online when the people I care about were right in front of me.</p>
-              <p>I uninstalled social apps from my phone and only check them on a computer. That change helped me stop compulsive checking and be more present with the people around me.</p>
+              <p>I used to get distracted by my phone during family dinners and gatherings. Even when I was sitting with my family for an hour, I couldn't resist checking my phone… <button type="button" class="story-read-more" data-story="sam">Read more</button></p>
             </div>
             <div class="story-helped">
               <strong>What helped me</strong>
@@ -1617,6 +1748,22 @@
   </section>
 
 </main>
+
+<div class="story-modal" id="story-modal" hidden aria-hidden="true">
+  <button type="button" class="story-modal-backdrop" data-close-story aria-label="Close story"></button>
+  <div class="story-modal-panel" role="dialog" aria-modal="true" aria-labelledby="story-modal-name">
+    <button type="button" class="story-modal-close" data-close-story aria-label="Close">&times;</button>
+    <span class="story-modal-tag" id="story-modal-tag"></span>
+    <h2 id="story-modal-name"></h2>
+    <p class="story-modal-title" id="story-modal-subtitle"></p>
+    <div class="story-modal-body" id="story-modal-body"></div>
+    <div class="story-modal-helped">
+      <strong>What helped me</strong>
+      <span id="story-modal-helped"></span>
+    </div>
+    <div class="story-modal-date" id="story-modal-date"></div>
+  </div>
+</div>
 
 <footer>
   <span>© 2026 Make room</span>
@@ -1705,6 +1852,7 @@
   }
 
   function showPage(name){
+    closeStoryModal();
     const isResourceSub = RESOURCE_SECTIONS.hasOwnProperty(name);
     const isResourceArea = isResourceSub || name === 'resources';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1760,6 +1908,104 @@
       const target = document.getElementById('community-share');
       if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
     });
+  });
+
+  // Community story modal
+  const STORIES = {
+    jing: {
+      tag: 'Rediscovered art',
+      name: 'Jing Z.',
+      subtitle: 'Finding My Way Back to Art',
+      date: 'August 14, 2026',
+      helped: 'Following fewer accounts and creating a less stimulating, less curated feed.',
+      paragraphs: [
+        'As an art student, I used to love crafting—drawing, crocheting, and making things with my hands. But over time, I found myself spending less and less time on the things I enjoyed. I couldn\'t understand where all my time was going until I realized how much of it was being eaten up by scrolling.',
+        'Once I started scrolling, it was difficult to keep track of time. I might open an app thinking I\'d only been there for 15 minutes, only to realize that a couple of hours had passed.',
+        'I wanted to break the habit, but simply deleting Instagram didn\'t work for me. I tried a hard stop and deleted the app completely, only to eventually come back and create a new account.',
+        'This time, I approached it differently.',
+        'I only followed people I actually knew personally. Without an endless stream of highly curated content tailored to my interests, I found myself much less compelled to keep scrolling.',
+        'I\'m still working on my relationship with social media, but this small change has made it easier for me to step away and make more time for the things I actually enjoy.'
+      ]
+    },
+    kyle: {
+      tag: 'Calmer bedtimes',
+      name: 'Kyle',
+      subtitle: 'Making Bedtime Less Stimulating',
+      date: 'September 2, 2026',
+      helped: 'Making my phone less stimulating at night by using a black-and-white display and turning off sound.',
+      paragraphs: [
+        'For a long time, scrolling on TikTok was the last thing I did before falling asleep.',
+        'Over the years, I noticed that I was feeling increasingly stressed at work, and I wasn\'t sleeping as well as I wanted to. I started looking into the relationship between nighttime phone use, stimulation, and sleep, and realized that my bedtime scrolling habit might be worth changing.',
+        'Putting my phone away completely was not easy. The habit had been part of my nighttime routine for years.',
+        'So instead of trying to quit overnight, I started by making my phone less stimulating.',
+        'I turned on a bedtime mode that changed the display to black and white, and I turned off the volume so there was less sensory stimulation. I didn\'t completely eliminate TikTok right away, but making the experience less stimulating helped me reduce how much I used it at night.',
+        'It wasn\'t a perfect solution, but it gave me a manageable first step.'
+      ]
+    },
+    sam: {
+      tag: 'Present family dinners',
+      name: 'Sam L.',
+      subtitle: 'Choosing the People in Front of Me',
+      date: 'July 28, 2026',
+      helped: 'Removing social media apps from my phone and limiting access to a computer.',
+      paragraphs: [
+        'I used to get distracted by my phone during family dinners and gatherings. Even when I was sitting with my family for an hour, I couldn\'t resist checking my phone several times to see what was happening on my feed.',
+        'At first, it seemed harmless. I was only checking for a moment.',
+        'But one day I stopped and asked myself:',
+        'What\'s the point of connecting with "friends" online when the people I care about are sitting right in front of me?',
+        'That was the moment I realized I wanted to reclaim my connection with the people around me.',
+        'At first, it was difficult. I was so used to checking what other people were doing that reaching for my phone had become almost automatic.',
+        'I tried setting a mental reminder to get off the app after 10 minutes, but the infinite scroll made it surprisingly easy to keep going.',
+        'Eventually, I decided to uninstall the apps from my phone completely.',
+        'Now, I only check X and Facebook when I\'m using a computer. They\'re no longer available to me during family dinners or other moments when I want to be present with the people around me.',
+        'That simple change has helped me reduce my compulsive checking and, more importantly, be more present with the people right in front of me.'
+      ]
+    }
+  };
+
+  const storyModal = document.getElementById('story-modal');
+  let storyFocusReturn = null;
+
+  function openStoryModal(id){
+    const story = STORIES[id];
+    if(!story || !storyModal) return;
+    storyFocusReturn = document.activeElement;
+    document.getElementById('story-modal-tag').textContent = story.tag;
+    document.getElementById('story-modal-name').textContent = story.name;
+    document.getElementById('story-modal-subtitle').textContent = story.subtitle;
+    document.getElementById('story-modal-body').innerHTML = story.paragraphs.map(p => '<p>' + p + '</p>').join('');
+    document.getElementById('story-modal-helped').textContent = story.helped;
+    document.getElementById('story-modal-date').textContent = story.date;
+    storyModal.hidden = false;
+    storyModal.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(function(){ storyModal.classList.add('open'); });
+    document.body.classList.add('modal-open');
+    storyModal.querySelector('.story-modal-close').focus();
+  }
+
+  function closeStoryModal(){
+    if(!storyModal || !storyModal.classList.contains('open')) return;
+    storyModal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    storyModal.setAttribute('aria-hidden', 'true');
+    setTimeout(function(){
+      if(!storyModal.classList.contains('open')) storyModal.hidden = true;
+    }, 200);
+    if(storyFocusReturn && storyFocusReturn.focus) storyFocusReturn.focus();
+  }
+
+  document.addEventListener('click', function(e){
+    const opener = e.target.closest('.story-read-more');
+    if(opener){
+      e.preventDefault();
+      openStoryModal(opener.getAttribute('data-story'));
+      return;
+    }
+    if(e.target.closest('[data-close-story]')) closeStoryModal();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeStoryModal();
   });
 
   // Flip cards on the Start a Detox page

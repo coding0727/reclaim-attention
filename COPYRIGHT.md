@@ -1,0 +1,3 @@
+Copyright © 2026 MakeRoom. All rights reserved.
+
+No part of this repository may be reproduced, distributed, or transmitted in any form without prior written permission.
